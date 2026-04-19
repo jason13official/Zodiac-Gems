@@ -33,7 +33,7 @@ public class ZodiacGemItem extends Item {
 
       case AMETHYST -> {
         list.add(active("Darkness on targeted player (8s cooldown)"));
-        list.add(active("Amethyst Blast — EvokerFangs shotgun"));
+        list.add(active("Amethyst Blast Shotgun"));
       }
 
       case AQUAMARINE -> {

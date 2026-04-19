@@ -7,6 +7,8 @@ import io.github.jason13official.zodiac_gems.impl.common.util.GemAbility;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import io.github.jason13official.zodiac_gems.impl.common.entity.PlayerBodyDouble;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import org.joml.Vector3f;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
@@ -15,15 +17,15 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.DragonFireball;
-import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.ShulkerBullet;
-import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpectralArrowItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
@@ -74,9 +76,29 @@ public class GemAbilityActivator {
 
       case AMETHYST_BLAST -> {
         Vec3 look = player.getLookAngle();
-        EvokerFangs fangs = new EvokerFangs(level, look.x, look.y, look.z, player.getViewYRot(1.0f), 5, player);
-        fangs.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
-        level.addFreshEntity(fangs);
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.6f, 0.0f, 1.0f), 1.2f);
+        level.sendParticles(dust, eyePos.x, eyePos.y, eyePos.z, 15, 0.2, 0.2, 0.2, 0.0);
+        for (int step = 1; step <= 6; step++) {
+          Vec3 trailPos = eyePos.add(look.scale(step * 1.5));
+          level.sendParticles(dust, trailPos.x, trailPos.y, trailPos.z, 3, 0.15, 0.15, 0.15, 0.0);
+        }
+        for (int i = 0; i < 4; i++) {
+          Vec3 spread = look.add(
+              (level.random.nextDouble() - 0.5) * 0.35,
+              (level.random.nextDouble() - 0.5) * 0.35,
+              (level.random.nextDouble() - 0.5) * 0.35
+          ).normalize();
+          Vec3 endPos = eyePos.add(spread.scale(10.0));
+          HitResult blockHit = player.pick(10.0, 1.0f, false);
+          double blockDistSq = blockHit.getType() != HitResult.Type.MISS ? blockHit.getLocation().distanceToSqr(eyePos) : 100.0;
+          AABB searchBox = player.getBoundingBox().expandTowards(spread.scale(10.0)).inflate(1.0, 1.0, 1.0);
+          EntityHitResult pelletHit = ProjectileUtil.getEntityHitResult(player, eyePos, endPos, searchBox,
+              e -> e != player && e instanceof LivingEntity, blockDistSq);
+          if (pelletHit != null && pelletHit.getEntity() instanceof LivingEntity target) {
+            target.hurt(level.damageSources().playerAttack(player), 3.0f);
+          }
+        }
       }
 
       case AQUAMARINE_WATERBEND -> {
@@ -134,10 +156,13 @@ public class GemAbilityActivator {
       }
 
       case EMERALD_SPECTRAL_ARROW -> {
-        Vec3 look = player.getLookAngle();
-        SpectralArrow arrow = new SpectralArrow(level, look.x, look.y, look.z, ItemStack.EMPTY, ItemStack.EMPTY);
-        arrow.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
-        level.addFreshEntity(arrow);
+        ItemStack stack = new ItemStack(Items.SPECTRAL_ARROW);
+        if (stack.getItem() instanceof SpectralArrowItem arrowItem) {
+          AbstractArrow arrow = arrowItem.createArrow(level, stack, player, null);
+          arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, 3.0f, 0.0f);
+          arrow.setCritArrow(true);
+          level.addFreshEntity(arrow);
+        }
       }
 
       case MOONSTONE_SLOW_FALLING -> {
