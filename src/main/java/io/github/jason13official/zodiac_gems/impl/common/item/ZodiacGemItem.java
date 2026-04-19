@@ -28,28 +28,28 @@ public class ZodiacGemItem extends Item {
 
       case GARNET -> {
         list.add(passive("Fire Resistance"));
-        list.add(active("Launch Ghast Fireball"));
+        list.add(active("Launch Ghast Fireball (6s cooldown)"));
       }
 
       case AMETHYST -> {
         list.add(active("Darkness on targeted player (8s cooldown)"));
-        list.add(active("Amethyst Blast Shotgun"));
+        list.add(active("Amethyst Blast Shotgun (6s cooldown)"));
       }
 
       case AQUAMARINE -> {
         list.add(passive("Water Breathing + Dolphin's Grace"));
-        list.add(active("Water Bending — pick up and fling water"));
+        list.add(active("Water Bending — pick up and fling water (6s cooldown)"));
       }
 
       case DIAMOND -> {
         list.add(passive("9 inventory slots kept on death"));
-        list.add(active("Turtle Master — Resistance IV (cooldown)"));
-        list.add(active("Fast Tunneling — Haste IV, costs hunger"));
+        list.add(active("Turtle Master — Resistance IV (6s cooldown)"));
+        list.add(active("Fast Tunneling — Haste IV, costs hunger (6s cooldown)"));
       }
 
       case EMERALD -> {
-        list.add(active("Ender Pearl Teleport (cooldown)"));
-        list.add(active("Chaos Spear — Spectral Arrow"));
+        list.add(active("Ender Pearl Teleport (6s cooldown)"));
+        list.add(active("Chaos Spear — Spectral Arrow (6s cooldown)"));
       }
 
       case MOONSTONE -> {
@@ -57,18 +57,18 @@ public class ZodiacGemItem extends Item {
         list.add(passive("Slow Falling"));
         list.add(passive("Regeneration at night"));
         list.add(passive("Mobs not hostile to holder"));
-        list.add(active("Trigger Slow Falling burst"));
+        list.add(active("Trigger Slow Falling burst (6s cooldown)"));
       }
 
       case RUBY -> {
-        list.add(active("Controllable Floating"));
-        list.add(active("Dragon's Breath attack"));
-        list.add(active("Apply floating to another player"));
+        list.add(active("Controllable Floating (6s cooldown)"));
+        list.add(active("Dragon's Breath attack (6s cooldown)"));
+        list.add(active("Apply floating to another player (6s cooldown)"));
       }
 
       case PERIDOT -> {
         list.add(passive("Poison Immunity"));
-        list.add(active("Poison Blast — splash Strong Poison"));
+        list.add(active("Poison Blast — splash Strong Poison (6s cooldown)"));
       }
 
       case SAPPHIRE -> {
@@ -77,18 +77,18 @@ public class ZodiacGemItem extends Item {
       }
 
       case TOURMALINE -> {
-        list.add(active("Spawn idle body double"));
-        list.add(active("Spawn fighting mimic"));
+        list.add(active("Spawn idle body double (6s cooldown)"));
+        list.add(active("Spawn fighting mimic (6s cooldown)"));
       }
 
       case TOPAZ -> {
         list.add(passive("No harmful effects"));
-        list.add(active("Warp to cursor — 50-block raycast"));
+        list.add(active("Warp to cursor — 50-block raycast (6s cooldown)"));
       }
 
       case ZIRCON -> {
         list.add(passive("No fall damage"));
-        list.add(active("Freeze nearby entities 6s (long cooldown)"));
+        list.add(active("Freeze nearby entities 6s (30s cooldown)"));
       }
     }
   }

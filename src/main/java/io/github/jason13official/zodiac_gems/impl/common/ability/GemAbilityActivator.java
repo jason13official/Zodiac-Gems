@@ -60,16 +60,16 @@ public class GemAbilityActivator {
     switch (ability) {
 
       case GARNET_FIREBALL -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.GARNET, 1.0f) > 0) return;
         Vec3 look = player.getLookAngle();
         LargeFireball fireball = new LargeFireball(level, player, look, 1);
         fireball.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
         level.addFreshEntity(fireball);
+        player.getCooldowns().addCooldown(ModItems.GARNET, 20 * 6);
       }
 
       case AMETHYST_DARKNESS -> {
-        if (player.getCooldowns().getCooldownPercent(ModItems.AMETHYST, 1.0f) > 0) {
-          return;
-        }
+        if (player.getCooldowns().getCooldownPercent(ModItems.AMETHYST, 1.0f) > 0) return;
         EntityHitResult entityHit = pickLivingEntity(player, 10.0);
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
           target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 400, 0));
@@ -78,6 +78,7 @@ public class GemAbilityActivator {
       }
 
       case AMETHYST_BLAST -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.AMETHYST, 1.0f) > 0) return;
         Vec3 look = player.getLookAngle();
         Vec3 eyePos = player.getEyePosition(1.0f);
         DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.6f, 0.0f, 1.0f), 1.2f);
@@ -102,9 +103,12 @@ public class GemAbilityActivator {
             target.hurt(level.damageSources().playerAttack(player), 3.0f);
           }
         }
+        player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 6);
       }
 
       case AQUAMARINE_WATERBEND -> {
+        // cooldown only blocks pickup — always allow release so held water is never stuck
+        if (!WaterbendTracker.isActive(player.getUUID()) && player.getCooldowns().getCooldownPercent(ModItems.AQUAMARINE, 1.0f) > 0) return;
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : level.players()) {
@@ -133,24 +137,29 @@ public class GemAbilityActivator {
               for (ServerPlayer p : level.players()) {
                 ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), true), PacketDistributor.PLAYER.with(p));
               }
+              player.getCooldowns().addCooldown(ModItems.AQUAMARINE, 20 * 6);
             }
           }
         }
       }
 
       case DIAMOND_TURTLE -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.DIAMOND, 1.0f) > 0) return;
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 5, 3));
         player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 5, 2));
         player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
       }
 
       case DIAMOND_TUNNEL -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.DIAMOND, 1.0f) > 0) return;
         if (player.getFoodData().getFoodLevel() < 4) return;
         player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 4);
         player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 3));
+        player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
       }
 
       case EMERALD_TELEPORT -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.EMERALD, 1.0f) > 0) return;
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
             SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL,
             0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
@@ -158,10 +167,11 @@ public class GemAbilityActivator {
         pearl.setItem(new ItemStack(Items.ENDER_PEARL));
         pearl.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
         level.addFreshEntity(pearl);
-        player.getCooldowns().addCooldown(ModItems.EMERALD, 20);
+        player.getCooldowns().addCooldown(ModItems.EMERALD, 20 * 6);
       }
 
       case EMERALD_SPECTRAL_ARROW -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.EMERALD, 1.0f) > 0) return;
         ItemStack stack = new ItemStack(Items.SPECTRAL_ARROW);
         if (stack.getItem() instanceof SpectralArrowItem arrowItem) {
           AbstractArrow arrow = arrowItem.createArrow(level, stack, player, null);
@@ -169,26 +179,33 @@ public class GemAbilityActivator {
           arrow.setCritArrow(true);
           level.addFreshEntity(arrow);
         }
+        player.getCooldowns().addCooldown(ModItems.EMERALD, 20 * 6);
       }
 
       case MOONSTONE_SLOW_FALLING -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.MOONSTONE, 1.0f) > 0) return;
         player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 200, 0));
+        player.getCooldowns().addCooldown(ModItems.MOONSTONE, 20 * 6);
       }
 
       case RUBY_FLOAT -> {
-        Vec3 vel = player.getDeltaMovement();
-        player.setDeltaMovement(vel.x, 0.1, vel.z);
+        if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) return;
+        player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 20, 3));
         player.fallDistance = 0;
+        player.getCooldowns().addCooldown(ModItems.RUBY, 20 * 6);
       }
 
       case RUBY_DRAGON_BREATH -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) return;
         Vec3 look = player.getLookAngle();
         DragonFireball fireball = new DragonFireball(level, player, look);
         fireball.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
         level.addFreshEntity(fireball);
+        player.getCooldowns().addCooldown(ModItems.RUBY, 20 * 6);
       }
 
       case RUBY_FLOAT_OTHERS -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) return;
         EntityHitResult entityHit = pickLivingEntity(player, 30.0);
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
           Vec3 look = player.getLookAngle();
@@ -196,19 +213,20 @@ public class GemAbilityActivator {
           bullet.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
           level.addFreshEntity(bullet);
         }
+        player.getCooldowns().addCooldown(ModItems.RUBY, 20 * 6);
       }
 
       case PERIDOT_POISON_BLAST -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.PERIDOT, 1.0f) > 0) return;
         ThrownPotion potion = new ThrownPotion(level, player);
         potion.setItem(PotionContents.createItemStack(Items.SPLASH_POTION, Potions.STRONG_POISON));
         potion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20, 0.5f, 1.0f);
         level.addFreshEntity(potion);
+        player.getCooldowns().addCooldown(ModItems.PERIDOT, 20 * 6);
       }
 
       case SAPPHIRE_LIGHTNING -> {
-        if (player.getCooldowns().getCooldownPercent(ModItems.SAPPHIRE, 1.0f) > 0) {
-          return;
-        }
+        if (player.getCooldowns().getCooldownPercent(ModItems.SAPPHIRE, 1.0f) > 0) return;
         HitResult hit = player.pick(30, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
           LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
@@ -220,32 +238,40 @@ public class GemAbilityActivator {
       }
 
       case TOURMALINE_BODY_DOUBLE -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.TOURMALINE, 1.0f) > 0) return;
         PlayerBodyDouble entity = new PlayerBodyDouble(level);
         entity.setOwnerUUID(player.getUUID());
         entity.setAttacking(false);
         entity.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
         level.addFreshEntity(entity);
+        player.getCooldowns().addCooldown(ModItems.TOURMALINE, 20 * 6);
       }
 
       case TOURMALINE_FIGHTING_MIMIC -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.TOURMALINE, 1.0f) > 0) return;
         PlayerBodyDouble entity = new PlayerBodyDouble(level);
         entity.setOwnerUUID(player.getUUID());
         entity.setAttacking(true);
         entity.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
         level.addFreshEntity(entity);
+        player.getCooldowns().addCooldown(ModItems.TOURMALINE, 20 * 6);
       }
 
       case TOPAZ_WARP -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.TOPAZ, 1.0f) > 0) return;
         HitResult hit = player.pick(50, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
           BlockPos pos = blockHit.getBlockPos().above();
           player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         }
+        player.getCooldowns().addCooldown(ModItems.TOPAZ, 20 * 6);
       }
 
       case ZIRCON_FREEZE -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.ZIRCON, 1.0f) > 0) return;
         AABB box = player.getBoundingBox().inflate(10);
         level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player).forEach(e -> e.setTicksFrozen(6 * 20));
+        player.getCooldowns().addCooldown(ModItems.ZIRCON, 20 * 30);
       }
     }
   }
