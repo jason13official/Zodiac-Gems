@@ -1,6 +1,7 @@
 package io.github.jason13official.zodiac_gems;
 
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
+import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.core.Registry;
@@ -26,6 +27,7 @@ public class ZodiacGems {
     EVENT_BUS = context.getModEventBus();
 
     bind(Registries.ITEM, ModItems::register);
+    bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
 
     if (FMLLoader.getDist() == Dist.CLIENT) {
       new ZodiacGemsClient(EVENT_BUS);
