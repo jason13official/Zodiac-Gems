@@ -34,7 +34,7 @@ public class ZodiacGems {
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
 
     EVENT_BUS.addListener((Consumer<FMLCommonSetupEvent>) event -> {
-      ZodiacNetwork.INSTANCE = ChannelBuilder.named(identifier("network")).networkProtocolVersion(1).clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
+      ZodiacNetwork.init();
     });
 
     if (FMLLoader.getDist() == Dist.CLIENT) {
