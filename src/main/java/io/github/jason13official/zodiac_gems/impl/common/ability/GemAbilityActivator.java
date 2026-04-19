@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.ability;
 
+import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -65,6 +66,8 @@ public class GemAbilityActivator {
           bolt.setVisualOnly(false); // true = cosmetic only, no damage
           level.addFreshEntity(bolt);
         }
+
+        player.getCooldowns().addCooldown(ModItems.SAPPHIRE, 20 * 12);
       }
 
       case TOPAZ -> {
