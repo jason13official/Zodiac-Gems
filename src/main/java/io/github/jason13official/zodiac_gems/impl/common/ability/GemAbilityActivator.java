@@ -5,6 +5,7 @@ import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWa
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemAbility;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
+import io.github.jason13official.zodiac_gems.impl.common.entity.PlayerBodyDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -186,11 +187,19 @@ public class GemAbilityActivator {
       }
 
       case TOURMALINE_BODY_DOUBLE -> {
-        // TODO: needs custom entity
+        PlayerBodyDouble entity = new PlayerBodyDouble(level);
+        entity.setOwnerUUID(player.getUUID());
+        entity.setAttacking(false);
+        entity.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+        level.addFreshEntity(entity);
       }
 
       case TOURMALINE_FIGHTING_MIMIC -> {
-        // TODO
+        PlayerBodyDouble entity = new PlayerBodyDouble(level);
+        entity.setOwnerUUID(player.getUUID());
+        entity.setAttacking(true);
+        entity.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+        level.addFreshEntity(entity);
       }
 
       case TOPAZ_WARP -> {

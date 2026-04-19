@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -70,7 +71,11 @@ public class ZodiacGems {
     });
 
     EVENT_BUS.addListener((Consumer<EntityAttributeCreationEvent>) event -> {
-      event.put(ModEntities.BODY_DOUBLE, LivingEntity.createLivingAttributes().build());
+      event.put(ModEntities.BODY_DOUBLE,
+          LivingEntity.createLivingAttributes()
+              .add(Attributes.ATTACK_DAMAGE, 4.0)
+              .add(Attributes.FOLLOW_RANGE, 16.0)
+              .build());
     });
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Added>) event -> {
