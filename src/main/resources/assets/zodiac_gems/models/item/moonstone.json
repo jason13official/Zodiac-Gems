@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "zodiac_gems:item/garnet"
+    "layer0": "zodiac_gems:item/moonstone"
   }
 }
