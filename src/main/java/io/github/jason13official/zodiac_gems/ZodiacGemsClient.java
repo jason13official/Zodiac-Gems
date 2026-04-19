@@ -2,7 +2,7 @@ package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
-import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -47,7 +47,7 @@ public class ZodiacGemsClient {
       if (mc.player == null) return;
       GemType gemType = GemType.getHeldGem(mc.player);
       if (gemType != null) {
-        ZodiacNetwork.INSTANCE.send(new UseAbilityPacket(gemType), PacketDistributor.SERVER.noArg());
+        ZodiacNetwork.INSTANCE.send(new UseAbilityC2SPacket(gemType), PacketDistributor.SERVER.noArg());
       }
     }
 

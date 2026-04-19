@@ -6,27 +6,28 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class UseAbilityPacket {
+public class UseAbilityC2SPacket {
 
-  private final GemType gemType;
+  // private final GemType gemType;
 
-  public UseAbilityPacket(GemType gemType) {
-    this.gemType = gemType;
+  public UseAbilityC2SPacket(GemType gemType) {
+    // this.gemType = gemType;
   }
 
-  public UseAbilityPacket(FriendlyByteBuf data) {
-    this.gemType = GemType.byId(data.readByte());
+  public UseAbilityC2SPacket(FriendlyByteBuf data) {
+    // this.gemType = GemType.byId(data.readByte());
   }
 
   public void encode(FriendlyByteBuf data) {
-    data.writeByte(this.gemType.getId());
+    // data.writeByte(this.gemType.getId());
   }
 
-  public static void handle(UseAbilityPacket packet, CustomPayloadEvent.Context context) {
+  public static void handle(UseAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
       if (player == null) return;
-      GemAbilityActivator.activate(packet.gemType, player);
+
+      GemAbilityActivator.activate(player);
     });
     context.setPacketHandled(true);
   }

@@ -1,8 +1,8 @@
 package io.github.jason13official.zodiac_gems.impl.common.network;
 
 import io.github.jason13official.zodiac_gems.ZodiacGems;
-import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityPacket;
-import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import net.minecraftforge.network.Channel;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.SimpleChannel;
@@ -15,7 +15,7 @@ public class ZodiacNetwork {
   public static void init() {
     INSTANCE = ChannelBuilder.named(ZodiacGems.identifier("network")).networkProtocolVersion(1).clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
 
-    INSTANCE.messageBuilder(UseAbilityPacket.class).encoder(UseAbilityPacket::encode).decoder(UseAbilityPacket::new).consumerMainThread(UseAbilityPacket::handle).add();
-    INSTANCE.messageBuilder(ToggleAbilityPacket.class).encoder(ToggleAbilityPacket::encode).decoder(ToggleAbilityPacket::new).consumerMainThread(ToggleAbilityPacket::handle).add();
+    INSTANCE.messageBuilder(UseAbilityC2SPacket.class).encoder(UseAbilityC2SPacket::encode).decoder(UseAbilityC2SPacket::new).consumerMainThread(UseAbilityC2SPacket::handle).add();
+    INSTANCE.messageBuilder(ToggleAbilityC2SPacket.class).encoder(ToggleAbilityC2SPacket::encode).decoder(ToggleAbilityC2SPacket::new).consumerMainThread(ToggleAbilityC2SPacket::handle).add();
   }
 }

@@ -1,19 +1,26 @@
 package io.github.jason13official.zodiac_gems;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,6 +34,8 @@ import net.minecraftforge.registries.RegisterEvent;
 public class ZodiacGems {
 
   public static IEventBus EVENT_BUS;
+
+  public static Map<UUID, Integer> ABILITY_SELECTION_BY_PLAYER = new HashMap<>();
 
   public ZodiacGems(FMLJavaModLoadingContext context) {
 
@@ -44,6 +53,12 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
     MinecraftForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
     MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
+
+    MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
+      if (event.getEntity() instanceof ServerPlayer player) {
+        PlayerAbilityTracker.reset(player.getUUID());
+      }
+    });
 
     if (FMLLoader.getDist() == Dist.CLIENT) {
       new ZodiacGemsClient(EVENT_BUS);
