@@ -112,8 +112,11 @@ public class GemAbilityActivator {
       }
 
       case DIAMOND_TURTLE -> {
-        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 3));
-        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 4));
+
+        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 5, 3));
+        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 5, 2));
+
+        player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
       }
 
       case EMERALD_TELEPORT -> {
