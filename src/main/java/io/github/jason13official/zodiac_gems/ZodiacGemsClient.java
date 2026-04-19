@@ -2,6 +2,7 @@ package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.client.KeyMapping;
@@ -53,6 +54,13 @@ public class ZodiacGemsClient {
 
     while (TOGGLE_ABILITY.get().consumeClick()) {
       Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
+
+      Minecraft mc = Minecraft.getInstance();
+      if (mc.player == null) return;
+      GemType gemType = GemType.getHeldGem(mc.player);
+      if (gemType != null) {
+        ZodiacNetwork.INSTANCE.send(new ToggleAbilityC2SPacket(), PacketDistributor.SERVER.noArg());
+      }
     }
   }
 }

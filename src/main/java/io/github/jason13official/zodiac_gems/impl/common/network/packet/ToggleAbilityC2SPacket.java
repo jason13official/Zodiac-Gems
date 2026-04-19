@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
+import io.github.jason13official.zodiac_gems.Constants;
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +16,8 @@ public class ToggleAbilityC2SPacket {
   public void encode(FriendlyByteBuf data) {}
 
   public static void handle(ToggleAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
+
+    Constants.LOG.info("Handling ToggleAbilityPacket.");
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
       if (player == null) return;
