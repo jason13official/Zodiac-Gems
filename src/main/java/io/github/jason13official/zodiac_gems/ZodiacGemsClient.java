@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -25,7 +26,7 @@ public class ZodiacGemsClient {
       event.register(TOGGLE_ABILITY.get());
     });
 
-    modEventBus.addListener((Consumer<ClientTickEvent>) event -> {
+    MinecraftForge.EVENT_BUS.addListener((Consumer<ClientTickEvent>) event -> {
       if (event.phase != Phase.END) {
         return;
       }
