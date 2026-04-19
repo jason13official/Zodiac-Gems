@@ -1,9 +1,12 @@
 package io.github.jason13official.zodiac_gems.impl.common.ability;
 
+import io.github.jason13official.zodiac_gems.Constants;
+import io.github.jason13official.zodiac_gems.accessor.ArrowLifeAccessor;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemAbility;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -12,14 +15,18 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.entity.projectile.ShulkerBullet;
 import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TippedArrowItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.AABB;
@@ -55,18 +62,47 @@ public class GemAbilityActivator {
 //        level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player)
 //            .forEach(e -> e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100, 0)));
 
-        HitResult hit = player.pick(30, 0, false);
+        Vec3 look = player.getLookAngle();
+        Vec3 deltaMovement = look.normalize().scale(2.0f);
+        // Arrow arrow = new Arrow(level, look.x, look.y, look.z, ItemStack.EMPTY, ItemStack.EMPTY);
+        ItemStack stack = new ItemStack(Items.TIPPED_ARROW);
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.HARMING).withEffectAdded(new MobEffectInstance(MobEffects.DARKNESS, 400, 0)));
 
-        if (hit instanceof EntityHitResult result) {
-          if (result.getEntity() instanceof LivingEntity living) {
-            living.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100, 0));
-          }
+        if (stack.getItem() instanceof TippedArrowItem arrowItem) {
+          Arrow arrow = (Arrow) arrowItem.asProjectile(level, player.position(), stack, player.getDirection());
+
+          ArrowLifeAccessor accesor = (ArrowLifeAccessor) arrow;
+          accesor.zodiac_gems$setLife(1100);
+
+          ArrowLifeAccessor accessorAgain = (ArrowLifeAccessor) arrow;
+          Constants.LOG.info("Arrow has actual life value of {}", accessorAgain.zodiac_gems$getLife());
+
+          arrow.setDeltaMovement(deltaMovement.x, deltaMovement.y, deltaMovement.z);
+          arrow.pickup = Pickup.DISALLOWED;
+          arrow.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
+          level.addFreshEntity(arrow);
+
+          player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 8);
         }
+
+//        HitResult hit = player.pick(4.0D, 0, false);
+//
+//        if (hit instanceof EntityHitResult result) {
+//          if (result.getEntity() instanceof LivingEntity living) {
+//            living.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100, 0));
+//
+//            Constants.LOG.info("living has darkness? {}", living.hasEffect(MobEffects.DARKNESS));
+//          } else {
+//            Constants.LOG.info("not living/null?");
+//          }
+//        } else {
+//          Constants.LOG.info("hit failed?");
+//        }
       }
 
       case AMETHYST_BLAST -> {
         Vec3 look = player.getLookAngle();
-        EvokerFangs fireball = new EvokerFangs(level, look.x, look.y, look.z, 0, 20, player);
+        EvokerFangs fireball = new EvokerFangs(level, look.x, look.y, look.z, player.getViewYRot(1.0f), 5, player);
         fireball.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
         level.addFreshEntity(fireball);
       }

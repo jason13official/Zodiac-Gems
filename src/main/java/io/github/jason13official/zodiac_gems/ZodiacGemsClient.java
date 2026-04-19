@@ -5,8 +5,12 @@ import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,6 +25,8 @@ public class ZodiacGemsClient {
 
   public static final Lazy<KeyMapping> USE_ABILITY = Lazy.of(() -> new KeyMapping("key.zodiac_gems.use", KeyConflictContext.IN_GAME, Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.categories.zodiac_gems"));
   public static final Lazy<KeyMapping> TOGGLE_ABILITY = Lazy.of(() -> new KeyMapping("key.zodiac_gems.toggle", KeyConflictContext.IN_GAME, Type.KEYSYM, GLFW.GLFW_KEY_X, "key.categories.zodiac_gems"));
+
+  public static final List<UUID> DARKNESS_TRACKER = new ArrayList<>();
 
   public ZodiacGemsClient(final IEventBus modEventBus) {
 
@@ -39,6 +45,10 @@ public class ZodiacGemsClient {
   public void onClientTick(ClientTickEvent event) {
     if (event.phase != Phase.END) {
       return;
+    }
+
+    if (Minecraft.getInstance().level instanceof ClientLevel level && level.getGameTime() % 20 == 0) {
+      Constants.LOG.info(DARKNESS_TRACKER.toString());
     }
 
     while (USE_ABILITY.get().consumeClick()) {
