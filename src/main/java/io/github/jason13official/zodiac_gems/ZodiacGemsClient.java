@@ -11,6 +11,9 @@ import java.util.UUID;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,6 +30,7 @@ public class ZodiacGemsClient {
   public static final Lazy<KeyMapping> TOGGLE_ABILITY = Lazy.of(() -> new KeyMapping("key.zodiac_gems.toggle", KeyConflictContext.IN_GAME, Type.KEYSYM, GLFW.GLFW_KEY_X, "key.categories.zodiac_gems"));
 
   public static final List<UUID> DARKNESS_TRACKER = new ArrayList<>();
+  public static final List<UUID> WATERBEND_TRACKER = new ArrayList<>();
 
   public ZodiacGemsClient(final IEventBus modEventBus) {
 
@@ -49,6 +53,20 @@ public class ZodiacGemsClient {
 
     if (Minecraft.getInstance().level instanceof ClientLevel level && level.getGameTime() % 20 == 0) {
       Constants.LOG.info(DARKNESS_TRACKER.toString());
+    }
+
+    if (Minecraft.getInstance().level instanceof ClientLevel level && !WATERBEND_TRACKER.isEmpty()) {
+      for (UUID uuid : WATERBEND_TRACKER) {
+        Player bender = level.getPlayerByUUID(uuid);
+        if (bender == null) continue;
+        Vec3 ballPos = bender.getEyePosition().add(bender.getLookAngle().scale(3.0));
+        for (int i = 0; i < 6; i++) {
+          double ox = (level.random.nextDouble() - 0.5) * 0.4;
+          double oy = (level.random.nextDouble() - 0.5) * 0.4;
+          double oz = (level.random.nextDouble() - 0.5) * 0.4;
+          level.addParticle(ParticleTypes.DRIPPING_WATER, ballPos.x + ox, ballPos.y + oy, ballPos.z + oz, 0, 0, 0);
+        }
+      }
     }
 
     while (USE_ABILITY.get().consumeClick()) {

@@ -1,11 +1,13 @@
 package io.github.jason13official.zodiac_gems;
 
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
+import io.github.jason13official.zodiac_gems.impl.common.ability.WaterbendTracker;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
 import java.util.function.BiConsumer;
@@ -54,6 +56,12 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {
         PlayerAbilityTracker.reset(player.getUUID());
+        if (WaterbendTracker.isActive(player.getUUID())) {
+          WaterbendTracker.remove(player.getUUID());
+          for (ServerPlayer p : player.serverLevel().players()) {
+            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+          }
+        }
       }
     });
 

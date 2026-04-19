@@ -2,6 +2,8 @@ package io.github.jason13official.zodiac_gems.impl.common.ability;
 
 import io.github.jason13official.zodiac_gems.Constants;
 import io.github.jason13official.zodiac_gems.accessor.ArrowLifeAccessor;
+import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemAbility;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
@@ -9,6 +11,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -29,11 +34,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TippedArrowItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
 public class GemAbilityActivator {
 
@@ -58,46 +65,32 @@ public class GemAbilityActivator {
       }
 
       case AMETHYST_DARKNESS -> {
-//        AABB box = player.getBoundingBox().inflate(8);
-//        level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player)
-//            .forEach(e -> e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100, 0)));
 
-        Vec3 look = player.getLookAngle();
-        Vec3 deltaMovement = look.normalize().scale(2.0f);
-        // Arrow arrow = new Arrow(level, look.x, look.y, look.z, ItemStack.EMPTY, ItemStack.EMPTY);
-        ItemStack stack = new ItemStack(Items.TIPPED_ARROW);
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.HARMING).withEffectAdded(new MobEffectInstance(MobEffects.DARKNESS, 400, 0)));
-
-        if (stack.getItem() instanceof TippedArrowItem arrowItem) {
-          Arrow arrow = (Arrow) arrowItem.asProjectile(level, player.position(), stack, player.getDirection());
-
-          ArrowLifeAccessor accesor = (ArrowLifeAccessor) arrow;
-          accesor.zodiac_gems$setLife(1100);
-
-          ArrowLifeAccessor accessorAgain = (ArrowLifeAccessor) arrow;
-          Constants.LOG.info("Arrow has actual life value of {}", accessorAgain.zodiac_gems$getLife());
-
-          arrow.setDeltaMovement(deltaMovement.x, deltaMovement.y, deltaMovement.z);
-          arrow.pickup = Pickup.DISALLOWED;
-          arrow.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
-          level.addFreshEntity(arrow);
-
-          player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 8);
+        if (player.getCooldowns().getCooldownPercent(ModItems.AMETHYST, 1.0f) > 0) {
+          return;
         }
 
-//        HitResult hit = player.pick(4.0D, 0, false);
-//
-//        if (hit instanceof EntityHitResult result) {
-//          if (result.getEntity() instanceof LivingEntity living) {
-//            living.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 100, 0));
-//
-//            Constants.LOG.info("living has darkness? {}", living.hasEffect(MobEffects.DARKNESS));
-//          } else {
-//            Constants.LOG.info("not living/null?");
-//          }
-//        } else {
-//          Constants.LOG.info("hit failed?");
-//        }
+        double range = 10.0;
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        Vec3 lookVec = player.getViewVector(1.0f);
+        Vec3 endPos = eyePos.add(lookVec.scale(range));
+
+        HitResult blockHit = player.pick(range, 1.0f, false);
+        double blockDistSq = blockHit.getType() != HitResult.Type.MISS
+            ? blockHit.getLocation().distanceToSqr(eyePos)
+            : range * range;
+
+        AABB searchBox = player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0, 1.0, 1.0);
+        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+            player, eyePos, endPos, searchBox,
+            e -> e != player && e instanceof LivingEntity,
+            blockDistSq
+        );
+
+        if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+          target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 400, 0));
+          player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 8);
+        } else if (blockHit instanceof BlockHitResult bhr && blockHit.getType() != HitResult.Type.MISS) {}
       }
 
       case AMETHYST_BLAST -> {
@@ -108,7 +101,50 @@ public class GemAbilityActivator {
       }
 
       case AQUAMARINE_WATERBEND -> {
-        // TODO
+        if (WaterbendTracker.isActive(player.getUUID())) {
+          WaterbendTracker.remove(player.getUUID());
+          for (ServerPlayer p : level.players()) {
+            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+          }
+          double range = 10.0;
+          Vec3 eyePos = player.getEyePosition(1.0f);
+          Vec3 lookVec = player.getViewVector(1.0f);
+          Vec3 endPos = eyePos.add(lookVec.scale(range));
+
+          HitResult blockHit = player.pick(range, 1.0f, false);
+          double blockDistSq = blockHit.getType() != HitResult.Type.MISS
+              ? blockHit.getLocation().distanceToSqr(eyePos)
+              : range * range;
+
+          AABB searchBox = player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0, 1.0, 1.0);
+          EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+              player, eyePos, endPos, searchBox,
+              e -> e != player && e instanceof LivingEntity,
+              blockDistSq
+          );
+
+          if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+            target.hurt(level.damageSources().playerAttack(player), 6.0f);
+            Vec3 knockDir = target.position().subtract(player.position()).normalize();
+            target.setDeltaMovement(knockDir.x * 1.5, 0.4, knockDir.z * 1.5);
+            level.setBlock(target.blockPosition(), Blocks.WATER.defaultBlockState(), 3);
+          } else if (blockHit instanceof BlockHitResult bhr && blockHit.getType() != HitResult.Type.MISS) {
+            level.setBlock(bhr.getBlockPos().relative(bhr.getDirection()), Blocks.WATER.defaultBlockState(), 3);
+          }
+        } else {
+          HitResult hit = player.pick(10, 0, true);
+          if (hit instanceof BlockHitResult blockHit) {
+            BlockPos pos = blockHit.getBlockPos();
+            FluidState fluid = level.getFluidState(pos);
+            if (fluid.is(FluidTags.WATER) && fluid.isSource()) {
+              level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+              WaterbendTracker.setActive(player.getUUID());
+              for (ServerPlayer p : level.players()) {
+                ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), true), PacketDistributor.PLAYER.with(p));
+              }
+            }
+          }
+        }
       }
 
       case DIAMOND_TURTLE -> {
@@ -155,11 +191,26 @@ public class GemAbilityActivator {
 
       case RUBY_FLOAT_OTHERS -> {
 
-        HitResult hit = player.pick(30, 0, false);
+        double range = 10.0;
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        Vec3 lookVec = player.getViewVector(1.0f);
+        Vec3 endPos = eyePos.add(lookVec.scale(range));
 
-        if (hit instanceof EntityHitResult result) {
+        HitResult blockHit = player.pick(range, 1.0f, false);
+        double blockDistSq = blockHit.getType() != HitResult.Type.MISS
+            ? blockHit.getLocation().distanceToSqr(eyePos)
+            : range * range;
+
+        AABB searchBox = player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0, 1.0, 1.0);
+        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+            player, eyePos, endPos, searchBox,
+            e -> e != player && e instanceof LivingEntity,
+            blockDistSq
+        );
+
+        if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
           Vec3 look = player.getLookAngle();
-          ShulkerBullet arrow = new ShulkerBullet(level, player, result.getEntity(), null);
+          ShulkerBullet arrow = new ShulkerBullet(level, player, target, null);
           arrow.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
           level.addFreshEntity(arrow);
         }
@@ -174,7 +225,7 @@ public class GemAbilityActivator {
 
       case SAPPHIRE_LIGHTNING -> {
         HitResult hit = player.pick(30, 0, false);
-        if (hit instanceof BlockHitResult blockHit) {
+        if (hit instanceof BlockHitResult blockHit && !(player.getCooldowns().getCooldownPercent(ModItems.SAPPHIRE, 1.0f) > 0.0f)) {
           LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
           bolt.setPos(Vec3.atCenterOf(blockHit.getBlockPos()));
           bolt.setVisualOnly(false);
