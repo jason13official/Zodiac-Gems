@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems;
 
+import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
 import java.util.function.BiConsumer;
@@ -11,8 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.registries.RegisterEvent;
 
 @Mod(Constants.MOD_ID)
@@ -28,6 +32,10 @@ public class ZodiacGems {
 
     bind(Registries.ITEM, ModItems::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
+
+    EVENT_BUS.addListener((Consumer<FMLCommonSetupEvent>) event -> {
+      ZodiacNetwork.INSTANCE = ChannelBuilder.named(identifier("network")).networkProtocolVersion(1).clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
+    });
 
     if (FMLLoader.getDist() == Dist.CLIENT) {
       new ZodiacGemsClient(EVENT_BUS);

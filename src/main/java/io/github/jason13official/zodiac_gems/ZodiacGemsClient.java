@@ -1,7 +1,6 @@
 package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
-import java.util.function.Consumer;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
@@ -21,23 +20,27 @@ public class ZodiacGemsClient {
 
     Constants.LOG.info("ZodiacGems Client.");
 
-    modEventBus.addListener((Consumer<RegisterKeyMappingsEvent>) event -> {
-      event.register(USE_ABILITY.get());
-      event.register(TOGGLE_ABILITY.get());
-    });
+    modEventBus.addListener(this::registerKeyMappings);
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<ClientTickEvent>) event -> {
-      if (event.phase != Phase.END) {
-        return;
-      }
+    MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
+  }
 
-      while (USE_ABILITY.get().consumeClick()) {
-        Constants.LOG.info("Consuming USE_ABILITY keypress.");
-      }
+  public void registerKeyMappings(RegisterKeyMappingsEvent event) {
+    event.register(USE_ABILITY.get());
+    event.register(TOGGLE_ABILITY.get());
+  }
 
-      while (TOGGLE_ABILITY.get().consumeClick()) {
-        Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
-      }
-    });
+  public void onClientTick(ClientTickEvent event) {
+    if (event.phase != Phase.END) {
+      return;
+    }
+
+    while (USE_ABILITY.get().consumeClick()) {
+      Constants.LOG.info("Consuming USE_ABILITY keypress.");
+    }
+
+    while (TOGGLE_ABILITY.get().consumeClick()) {
+      Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
+    }
   }
 }

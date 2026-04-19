@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 
 public class ModTabs {
@@ -17,6 +18,7 @@ public class ModTabs {
     Constants.LOG.info("ZodiacGems CreativeModeTab.");
 
     ZODIAC_GEMS = CreativeModeTab.builder()
+        .withTabsBefore(CreativeModeTabs.OP_BLOCKS)
         .icon(() -> new ItemStack(ModItems.EMERALD))
         .title(Component.translatable("itemGroup.zodiacGems"))
         .displayItems((parameters, output) -> {
