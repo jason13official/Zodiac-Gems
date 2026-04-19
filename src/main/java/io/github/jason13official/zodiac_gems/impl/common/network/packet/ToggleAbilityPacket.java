@@ -11,6 +11,8 @@ public class ToggleAbilityPacket {
 
   public void encode(FriendlyByteBuf data) {}
 
-  public static void handle(ToggleAbilityPacket packet, CustomPayloadEvent.Context context) {}
-
+  public static void handle(ToggleAbilityPacket packet, CustomPayloadEvent.Context context) {
+    context.enqueueWork(() -> {});
+    context.setPacketHandled(true);
+  }
 }

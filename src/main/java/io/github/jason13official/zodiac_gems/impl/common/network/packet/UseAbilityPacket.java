@@ -11,6 +11,8 @@ public class UseAbilityPacket {
 
   public void encode(FriendlyByteBuf data) {}
 
-  public static void handle(UseAbilityPacket packet, CustomPayloadEvent.Context context) {}
-
+  public static void handle(UseAbilityPacket packet, CustomPayloadEvent.Context context) {
+    context.enqueueWork(() -> {});
+    context.setPacketHandled(true);
+  }
 }
