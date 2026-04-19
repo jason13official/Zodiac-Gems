@@ -3,6 +3,7 @@ package io.github.jason13official.zodiac_gems.impl.common.registry;
 import io.github.jason13official.zodiac_gems.Constants;
 import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
+import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import java.util.function.BiConsumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -57,26 +58,26 @@ public class ModItems {
 
     Constants.LOG.info("ZodiacGems Items.");
 
-    GARNET = new ZodiacGemItem(new Properties().stacksTo(1));
-    AMETHYST = new ZodiacGemItem(new Properties().stacksTo(1));
-    AQUAMARINE = new ZodiacGemItem(new Properties().stacksTo(1));
-    DIAMOND = new ZodiacGemItem(new Properties().stacksTo(1));
+    GARNET = new ZodiacGemItem(GemType.GARNET, new Properties().stacksTo(1));
+    AMETHYST = new ZodiacGemItem(GemType.AMETHYST, new Properties().stacksTo(1));
+    AQUAMARINE = new ZodiacGemItem(GemType.AQUAMARINE, new Properties().stacksTo(1));
+    DIAMOND = new ZodiacGemItem(GemType.DIAMOND, new Properties().stacksTo(1));
 
-    EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    YELLOW_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    WHITE_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    PURPLE_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    CYAN_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    RED_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
-    BLUE_EMERALD = new ZodiacGemItem(new Properties().stacksTo(1));
+    EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    YELLOW_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    WHITE_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    PURPLE_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    CYAN_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    RED_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
+    BLUE_EMERALD = new ZodiacGemItem(GemType.EMERALD, new Properties().stacksTo(1));
 
-    MOONSTONE = new ZodiacGemItem(new Properties().stacksTo(1));
-    RUBY = new ZodiacGemItem(new Properties().stacksTo(1));
-    PERIDOT = new ZodiacGemItem(new Properties().stacksTo(1));
-    SAPPHIRE = new ZodiacGemItem(new Properties().stacksTo(1));
-    TOURMALINE = new ZodiacGemItem(new Properties().stacksTo(1));
-    TOPAZ = new ZodiacGemItem(new Properties().stacksTo(1));
-    ZIRCON = new ZodiacGemItem(new Properties().stacksTo(1));
+    MOONSTONE = new ZodiacGemItem(GemType.MOONSTONE, new Properties().stacksTo(1));
+    RUBY = new ZodiacGemItem(GemType.RUBY, new Properties().stacksTo(1));
+    PERIDOT = new ZodiacGemItem(GemType.PERIDOT, new Properties().stacksTo(1));
+    SAPPHIRE = new ZodiacGemItem(GemType.SAPPHIRE, new Properties().stacksTo(1));
+    TOURMALINE = new ZodiacGemItem(GemType.TOURMALINE, new Properties().stacksTo(1));
+    TOPAZ = new ZodiacGemItem(GemType.TOPAZ, new Properties().stacksTo(1));
+    ZIRCON = new ZodiacGemItem(GemType.ZIRCON, new Properties().stacksTo(1));
 
     consumer.accept(GARNET, ZodiacGems.identifier("garnet"));
     consumer.accept(AMETHYST, ZodiacGems.identifier("amethyst"));

@@ -1,7 +1,11 @@
 package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
+import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityPacket;
+import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -9,6 +13,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 public class ZodiacGemsClient {
@@ -37,6 +42,13 @@ public class ZodiacGemsClient {
 
     while (USE_ABILITY.get().consumeClick()) {
       Constants.LOG.info("Consuming USE_ABILITY keypress.");
+
+      Minecraft mc = Minecraft.getInstance();
+      if (mc.player == null) return;
+      GemType gemType = GemType.getHeldGem(mc.player);
+      if (gemType != null) {
+        ZodiacNetwork.INSTANCE.send(new UseAbilityPacket(gemType), PacketDistributor.SERVER.noArg());
+      }
     }
 
     while (TOGGLE_ABILITY.get().consumeClick()) {

@@ -1,5 +1,8 @@
 package io.github.jason13official.zodiac_gems;
 
+import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
+import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
+import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
@@ -10,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -36,6 +40,10 @@ public class ZodiacGems {
     EVENT_BUS.addListener((Consumer<FMLCommonSetupEvent>) event -> {
       ZodiacNetwork.init();
     });
+
+    MinecraftForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
+    MinecraftForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
+    MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
 
     if (FMLLoader.getDist() == Dist.CLIENT) {
       new ZodiacGemsClient(EVENT_BUS);
