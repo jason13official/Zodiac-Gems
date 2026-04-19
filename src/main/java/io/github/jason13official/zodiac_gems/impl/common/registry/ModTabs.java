@@ -14,6 +14,8 @@ public class ModTabs {
 
   public static void register(BiConsumer<CreativeModeTab, ResourceLocation> consumer) {
 
+    Constants.LOG.info("ZodiacGems CreativeModeTab.");
+
     ZODIAC_GEMS = CreativeModeTab.builder()
         .icon(() -> new ItemStack(ModItems.EMERALD))
         .title(Component.translatable("itemGroup.zodiacGems"))
