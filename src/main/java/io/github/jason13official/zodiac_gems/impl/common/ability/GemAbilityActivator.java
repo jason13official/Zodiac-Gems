@@ -17,7 +17,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -148,11 +151,14 @@ public class GemAbilityActivator {
       }
 
       case EMERALD_TELEPORT -> {
-        HitResult hit = player.pick(20, 0, false);
-        if (hit instanceof BlockHitResult blockHit) {
-          BlockPos pos = blockHit.getBlockPos().above();
-          player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-        }
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+            SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL,
+            0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+        ThrownEnderpearl pearl = new ThrownEnderpearl(level, player);
+        pearl.setItem(new ItemStack(Items.ENDER_PEARL));
+        pearl.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+        level.addFreshEntity(pearl);
+        player.getCooldowns().addCooldown(ModItems.EMERALD, 20);
       }
 
       case EMERALD_SPECTRAL_ARROW -> {

@@ -58,7 +58,7 @@ public class LivingUpdateEventHandler {
         applyEffect(player, MobEffects.DOLPHINS_GRACE, DURATION_TICKS, 0);
       }
       case MOONSTONE -> {
-        applyEffect(player, MobEffects.NIGHT_VISION, DURATION_TICKS * 8, 0);
+        applyEffect(player, MobEffects.NIGHT_VISION, 20 * 30, 0); // 30 seconds to avoid flickering
         applyEffect(player, MobEffects.SLOW_FALLING, DURATION_TICKS, 0);
         if (!player.level().isDay()) {
           applyEffect(player, MobEffects.REGENERATION, DURATION_TICKS, 0);
