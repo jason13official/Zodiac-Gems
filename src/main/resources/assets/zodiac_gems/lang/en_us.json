@@ -1,6 +1,10 @@
 {
   "itemGroup.zodiacGems": "Zodiac Gems",
 
+  "key.categories.zodiac_gems": "Zodiac Gems",
+  "key.zodiac_gems.use": "Use Ability",
+  "key.zodiac_gems.toggle": "Toggle/Change Ability",
+
   "item.zodiac_gems.garnet": "Gilded Garnet",
   "item.zodiac_gems.amethyst": "Anguish Amethyst",
   "item.zodiac_gems.aquamarine": "Aqua marine",
