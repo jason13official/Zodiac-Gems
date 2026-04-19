@@ -2,6 +2,7 @@ package io.github.jason13official.zodiac_gems;
 
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.WaterbendTracker;
+import io.github.jason13official.zodiac_gems.impl.common.event.handler.DiamondVaultHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
@@ -26,7 +27,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -57,6 +60,8 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
     MinecraftForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
     MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
+    MinecraftForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) DiamondVaultHandler::onPlayerDeath);
+    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) DiamondVaultHandler::onPlayerClone);
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {

@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.SapphireSignalTracker;
 import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
@@ -8,6 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -42,6 +44,11 @@ public class LivingUpdateEventHandler {
     if (!(entity instanceof ServerPlayer player)) return;
 
     GemType heldGemType = GemType.getHeldGem(player);
+
+    if (heldGemType != GemType.SAPPHIRE) {
+      SapphireSignalTracker.remove(player.getUUID());
+    }
+
     if (heldGemType == null) return;
 
     switch (heldGemType) {
@@ -57,6 +64,13 @@ public class LivingUpdateEventHandler {
           applyEffect(player, MobEffects.REGENERATION, DURATION_TICKS, 0);
         }
       }
+      case PERIDOT -> player.removeEffect(MobEffects.POISON);
+      case SAPPHIRE -> SapphireSignalTracker.update(player.getUUID(), player.blockPosition());
+      case TOPAZ -> player.getActiveEffects().stream()
+          .filter(e -> e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)
+          .map(e -> e.getEffect())
+          .toList()
+          .forEach(player::removeEffect);
     }
   }
 

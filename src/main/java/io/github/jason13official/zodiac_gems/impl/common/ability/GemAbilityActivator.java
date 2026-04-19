@@ -119,6 +119,12 @@ public class GemAbilityActivator {
         player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
       }
 
+      case DIAMOND_TUNNEL -> {
+        if (player.getFoodData().getFoodLevel() < 4) return;
+        player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 4);
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 3));
+      }
+
       case EMERALD_TELEPORT -> {
         HitResult hit = player.pick(20, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
@@ -180,10 +186,6 @@ public class GemAbilityActivator {
           level.addFreshEntity(bolt);
         }
         player.getCooldowns().addCooldown(ModItems.SAPPHIRE, 20 * 12);
-      }
-
-      case SAPPHIRE_REDSTONE_SIGNAL -> {
-        // TODO
       }
 
       case TOURMALINE_BODY_DOUBLE -> {

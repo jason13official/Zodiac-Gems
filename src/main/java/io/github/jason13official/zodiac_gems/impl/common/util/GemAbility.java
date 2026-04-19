@@ -15,7 +15,7 @@ public enum GemAbility {
 
   // Diamond
   DIAMOND_TURTLE,
-  // DIAMOND_TUNNEL, // passive ability/item is basically a pickaxe/shovel combo?
+  DIAMOND_TUNNEL,
 
   // Emerald
   EMERALD_TELEPORT,
