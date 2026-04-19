@@ -8,6 +8,7 @@ import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpd
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
+import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
 import java.util.function.BiConsumer;
@@ -19,8 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +45,7 @@ public class ZodiacGems {
 
     EVENT_BUS = context.getModEventBus();
 
+    bind(Registries.ENTITY_TYPE, ModEntities::register);
     bind(Registries.ITEM, ModItems::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
 
@@ -63,6 +67,10 @@ public class ZodiacGems {
           }
         }
       }
+    });
+
+    EVENT_BUS.addListener((Consumer<EntityAttributeCreationEvent>) event -> {
+      event.put(ModEntities.BODY_DOUBLE, LivingEntity.createLivingAttributes().build());
     });
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Added>) event -> {

@@ -1,19 +1,25 @@
 package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
+import io.github.jason13official.zodiac_gems.impl.client.renderer.PlayerBodyDoubleRenderer;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
+import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +43,8 @@ public class ZodiacGemsClient {
     Constants.LOG.info("ZodiacGems Client.");
 
     modEventBus.addListener(this::registerKeyMappings);
+    modEventBus.addListener(this::registerEntityRenderers);
+    modEventBus.addListener(this::registerEntityLayers);
 
     MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
   }
@@ -46,14 +54,22 @@ public class ZodiacGemsClient {
     event.register(TOGGLE_ABILITY.get());
   }
 
+  public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.BODY_DOUBLE, PlayerBodyDoubleRenderer::new);
+  }
+
+  public void registerEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(PlayerBodyDoubleRenderer.LAYER_LOCATION, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
+  }
+
   public void onClientTick(ClientTickEvent event) {
     if (event.phase != Phase.END) {
       return;
     }
 
-    if (Minecraft.getInstance().level instanceof ClientLevel level && level.getGameTime() % 20 == 0) {
-      Constants.LOG.info(DARKNESS_TRACKER.toString());
-    }
+//    if (Minecraft.getInstance().level instanceof ClientLevel level && level.getGameTime() % 20 == 0) {
+//      Constants.LOG.info(DARKNESS_TRACKER.toString());
+//    }
 
     if (Minecraft.getInstance().level instanceof ClientLevel level && !WATERBEND_TRACKER.isEmpty()) {
       for (UUID uuid : WATERBEND_TRACKER) {
