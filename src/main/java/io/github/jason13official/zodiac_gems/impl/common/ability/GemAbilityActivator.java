@@ -270,7 +270,10 @@ public class GemAbilityActivator {
       case ZIRCON_FREEZE -> {
         if (player.getCooldowns().getCooldownPercent(ModItems.ZIRCON, 1.0f) > 0) return;
         AABB box = player.getBoundingBox().inflate(10);
-        level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player).forEach(e -> e.setTicksFrozen(6 * 20));
+        level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player).forEach(e -> {
+          e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 10, 10, true, true));
+          e.setTicksFrozen(20 * 10);
+        });
         player.getCooldowns().addCooldown(ModItems.ZIRCON, 20 * 30);
       }
     }
