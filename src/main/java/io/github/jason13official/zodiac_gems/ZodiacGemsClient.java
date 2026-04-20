@@ -8,7 +8,11 @@ import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbili
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -37,6 +41,8 @@ public class ZodiacGemsClient {
 
   public static final List<UUID> DARKNESS_TRACKER = new ArrayList<>();
   public static final List<UUID> WATERBEND_TRACKER = new ArrayList<>();
+  public static final Map<UUID, UUID> HIDDEN_PLAYERS = new HashMap<>();
+  public static final Set<UUID> HIDDEN_NAMETAGS = new HashSet<>();
 
   public ZodiacGemsClient(final IEventBus modEventBus) {
 
@@ -88,7 +94,7 @@ public class ZodiacGemsClient {
     }
 
     while (USE_ABILITY.get().consumeClick()) {
-      Constants.LOG.info("Consuming USE_ABILITY keypress.");
+      // Constants.LOG.info("Consuming USE_ABILITY keypress.");
 
       Minecraft mc = Minecraft.getInstance();
       if (mc.player == null) {
@@ -101,7 +107,7 @@ public class ZodiacGemsClient {
     }
 
     while (TOGGLE_ABILITY.get().consumeClick()) {
-      Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
+      // Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
 
       Minecraft mc = Minecraft.getInstance();
       if (mc.player == null) {

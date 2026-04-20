@@ -1,13 +1,18 @@
 package io.github.jason13official.zodiac_gems;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.InvisibilityTracker;
+import io.github.jason13official.zodiac_gems.impl.common.ability.NametagTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.WaterbendTracker;
+import io.github.jason13official.zodiac_gems.impl.common.command.ZodiacCommands;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.DiamondVaultHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.ItemPickupEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncInvisibilityS2CPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncNametagS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
@@ -27,7 +32,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import java.util.Map;
+import java.util.UUID;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -68,6 +77,17 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
     MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerDeath);
     MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerClone);
+    MinecraftForge.EVENT_BUS.addListener(ZodiacCommands::register);
+
+    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) event -> {
+      if (!(event.getEntity() instanceof ServerPlayer player)) return;
+      for (Map.Entry<UUID, UUID> entry : InvisibilityTracker.getAll().entrySet()) {
+        ZodiacNetwork.INSTANCE.send(new SyncInvisibilityS2CPacket(entry.getKey(), true, entry.getValue()), PacketDistributor.PLAYER.with(player));
+      }
+      for (UUID uuid : NametagTracker.getAll()) {
+        ZodiacNetwork.INSTANCE.send(new SyncNametagS2CPacket(uuid, true), PacketDistributor.PLAYER.with(player));
+      }
+    });
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {

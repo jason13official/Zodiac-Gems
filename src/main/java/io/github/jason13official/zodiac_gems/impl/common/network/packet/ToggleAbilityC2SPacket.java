@@ -17,7 +17,7 @@ public class ToggleAbilityC2SPacket {
 
   public static void handle(ToggleAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
 
-    Constants.LOG.info("Handling ToggleAbilityPacket.");
+    // Constants.LOG.info("Handling ToggleAbilityPacket.");
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
       if (player == null) {

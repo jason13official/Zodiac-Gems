@@ -21,7 +21,7 @@ public class UseAbilityC2SPacket {
 
   public static void handle(UseAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
 
-    Constants.LOG.info("Handling UseAbilityPacket.");
+    // Constants.LOG.info("Handling UseAbilityPacket.");
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
       if (player == null) {

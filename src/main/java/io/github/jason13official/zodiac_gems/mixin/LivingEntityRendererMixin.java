@@ -3,6 +3,7 @@ package io.github.jason13official.zodiac_gems.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.jason13official.zodiac_gems.ZodiacGemsClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -53,6 +54,18 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     pPoseStack.scale(1.1f, 1.1f, 1.1f); // temporary scaling for testing
     instance.getModel().renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, i, 0x26131313);
     pPoseStack.popPose();
+  }
+
+  @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"), cancellable = true)
+  private void zodiac_gems$checkHidden(T pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci) {
+    java.util.UUID uuid = pEntity.getUUID();
+    if (!ZodiacGemsClient.HIDDEN_PLAYERS.containsKey(uuid)) return;
+    Minecraft mc = Minecraft.getInstance();
+    if (mc.player == null) return;
+    java.util.UUID canSee = ZodiacGemsClient.HIDDEN_PLAYERS.get(uuid);
+    if (!mc.player.getUUID().equals(canSee)) {
+      ci.cancel();
+    }
   }
 
   @SuppressWarnings("unsafe")
