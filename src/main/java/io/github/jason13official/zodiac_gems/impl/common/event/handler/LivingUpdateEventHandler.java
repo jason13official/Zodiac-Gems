@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.SapphireSignalTracker;
 import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
@@ -7,6 +8,7 @@ import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDa
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -42,6 +44,13 @@ public class LivingUpdateEventHandler {
     }
 
     if (!(entity instanceof ServerPlayer player)) return;
+
+    if (RubyFloatTracker.isActive(player.getUUID()) && level.getGameTime() >= RubyFloatTracker.getExpiry(player.getUUID())) {
+      RubyFloatTracker.remove(player.getUUID());
+      var gravity = player.getAttribute(Attributes.GRAVITY);
+      if (gravity != null) gravity.setBaseValue(0.08);
+      player.fallDistance = 0;
+    }
 
     GemType heldGemType = GemType.getHeldGem(player);
 

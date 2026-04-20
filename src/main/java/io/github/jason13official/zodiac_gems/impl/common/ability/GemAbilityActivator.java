@@ -37,6 +37,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -190,8 +191,13 @@ public class GemAbilityActivator {
 
       case RUBY_FLOAT -> {
         if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) return;
-        player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 20, 3));
+        var gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.0);
+        // player.setDeltaMovement(player.getDeltaMovement().x, 0.4, player.getDeltaMovement().z);
+        player.setDeltaMovement(player.getDeltaMovement().x, 0.8, player.getDeltaMovement().z);
+        player.hasImpulse = true;
         player.fallDistance = 0;
+        RubyFloatTracker.start(player.getUUID(), level.getGameTime() + 100);
         player.getCooldowns().addCooldown(ModItems.RUBY, 20 * 6);
       }
 
