@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
+import io.github.jason13official.zodiac_gems.accessor.AdditionalInventory;
 import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import java.util.ArrayList;
@@ -21,12 +22,13 @@ public class DiamondVaultHandler {
     if (!(event.getEntity() instanceof ServerPlayer player)) return;
     if (GemType.getHeldGem(player) != GemType.DIAMOND) return;
 
+    AdditionalInventory aegis = () -> ((AdditionalInventory) player.getInventory()).zodiac$getItems();
     List<ItemStack> saved = new ArrayList<>();
-    for (int i = 0; i < player.getInventory().getContainerSize() && saved.size() < VAULT_SIZE; i++) {
-      ItemStack stack = player.getInventory().getItem(i);
+    for (int i = 0; i < aegis.getContainerSize() && saved.size() < VAULT_SIZE; i++) {
+      ItemStack stack = aegis.getItem(i);
       if (stack.isEmpty() || stack.getItem() instanceof ZodiacGemItem) continue;
       saved.add(stack.copy());
-      player.getInventory().setItem(i, ItemStack.EMPTY);
+      aegis.setItem(i, ItemStack.EMPTY);
     }
 
     if (!saved.isEmpty()) {
@@ -40,10 +42,16 @@ public class DiamondVaultHandler {
     List<ItemStack> saved = vault.remove(id);
     if (saved == null) return;
     ServerPlayer newPlayer = (ServerPlayer) event.getEntity();
+    AdditionalInventory aegis = () -> ((AdditionalInventory) newPlayer.getInventory()).zodiac$getItems();
+
+    int index = 0;
     for (ItemStack stack : saved) {
-      if (!newPlayer.getInventory().add(stack)) {
-        newPlayer.drop(stack, false);
-      }
+//      if (!newPlayer.getInventory().add(stack)) {
+//        newPlayer.drop(stack, false);
+//      }
+      aegis.setItem(index, stack);
+      index++;
     }
+
   }
 }

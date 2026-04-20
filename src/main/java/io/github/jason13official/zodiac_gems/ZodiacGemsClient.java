@@ -74,7 +74,9 @@ public class ZodiacGemsClient {
     if (Minecraft.getInstance().level instanceof ClientLevel level && !WATERBEND_TRACKER.isEmpty()) {
       for (UUID uuid : WATERBEND_TRACKER) {
         Player bender = level.getPlayerByUUID(uuid);
-        if (bender == null) continue;
+        if (bender == null) {
+          continue;
+        }
         Vec3 ballPos = bender.getEyePosition().add(bender.getLookAngle().scale(3.0));
         for (int i = 0; i < 6; i++) {
           double ox = (level.random.nextDouble() - 0.5) * 0.4;
@@ -89,7 +91,9 @@ public class ZodiacGemsClient {
       Constants.LOG.info("Consuming USE_ABILITY keypress.");
 
       Minecraft mc = Minecraft.getInstance();
-      if (mc.player == null) return;
+      if (mc.player == null) {
+        return;
+      }
       GemType gemType = GemType.getHeldGem(mc.player);
       if (gemType != null) {
         ZodiacNetwork.INSTANCE.send(new UseAbilityC2SPacket(gemType), PacketDistributor.SERVER.noArg());
@@ -100,7 +104,9 @@ public class ZodiacGemsClient {
       Constants.LOG.info("Consuming TOGGLE_ABILITY keypress.");
 
       Minecraft mc = Minecraft.getInstance();
-      if (mc.player == null) return;
+      if (mc.player == null) {
+        return;
+      }
       GemType gemType = GemType.getHeldGem(mc.player);
       if (gemType != null) {
         ZodiacNetwork.INSTANCE.send(new ToggleAbilityC2SPacket(), PacketDistributor.SERVER.noArg());
