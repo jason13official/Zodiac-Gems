@@ -1,6 +1,7 @@
 package io.github.jason13official.zodiac_gems.mixin;
 
 import io.github.jason13official.zodiac_gems.accessor.AdditionalInventory;
+import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +38,10 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-          return inventory.player.getMainHandItem().is(ModItems.DIAMOND) || inventory.player.getOffhandItem().is(ModItems.DIAMOND);
+          boolean holdingDiamond = inventory.player.getMainHandItem().is(ModItems.DIAMOND)
+              || inventory.player.getOffhandItem().is(ModItems.DIAMOND);
+          if (!holdingDiamond) return false;
+          return !(stack.getItem() instanceof ZodiacGemItem);
         }
       });
     }

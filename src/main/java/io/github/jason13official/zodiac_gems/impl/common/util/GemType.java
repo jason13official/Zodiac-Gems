@@ -11,30 +11,37 @@ import net.minecraft.world.item.ItemStack;
 
 public enum GemType implements StringRepresentable {
 
-  GARNET(0, "garnet", GemAbility.GARNET_FIREBALL),
-  AMETHYST(1, "amethyst", GemAbility.AMETHYST_DARKNESS, GemAbility.AMETHYST_BLAST),
-  AQUAMARINE(2, "aquamarine", GemAbility.AQUAMARINE_WATERBEND),
-  DIAMOND(3, "diamond", GemAbility.DIAMOND_TURTLE, GemAbility.DIAMOND_TUNNEL),
-  EMERALD(4, "emerald", GemAbility.EMERALD_TELEPORT, GemAbility.EMERALD_SPECTRAL_ARROW),
-  MOONSTONE(5, "moonstone", GemAbility.MOONSTONE_SLOW_FALLING),
-  RUBY(6, "ruby", GemAbility.RUBY_FLOAT, GemAbility.RUBY_DRAGON_BREATH, GemAbility.RUBY_FLOAT_OTHERS),
-  PERIDOT(7, "peridot", GemAbility.PERIDOT_POISON_BLAST),
-  SAPPHIRE(8, "sapphire", GemAbility.SAPPHIRE_LIGHTNING),
-  TOURMALINE(9, "tourmaline", GemAbility.TOURMALINE_BODY_DOUBLE, GemAbility.TOURMALINE_FIGHTING_MIMIC),
-  TOPAZ(10, "topaz", GemAbility.TOPAZ_WARP),
-  ZIRCON(11, "zircon", GemAbility.ZIRCON_FREEZE);
+  GARNET(0, "garnet", 0.85f, 0.10f, 0.10f, GemAbility.GARNET_FIREBALL),
+  AMETHYST(1, "amethyst", 0.60f, 0.00f, 1.00f, GemAbility.AMETHYST_DARKNESS, GemAbility.AMETHYST_BLAST),
+  AQUAMARINE(2, "aquamarine", 0.00f, 0.85f, 0.90f, GemAbility.AQUAMARINE_WATERBEND),
+  DIAMOND(3, "diamond", 0.70f, 0.90f, 1.00f, GemAbility.DIAMOND_TURTLE, GemAbility.DIAMOND_TUNNEL),
+  EMERALD(4, "emerald", 0.00f, 0.80f, 0.20f, GemAbility.EMERALD_TELEPORT, GemAbility.EMERALD_SPECTRAL_ARROW),
+  MOONSTONE(5, "moonstone", 0.95f, 0.95f, 0.70f, GemAbility.MOONSTONE_SLOW_FALLING),
+  RUBY(6, "ruby", 0.90f, 0.05f, 0.20f, GemAbility.RUBY_FLOAT, GemAbility.RUBY_DRAGON_BREATH, GemAbility.RUBY_FLOAT_OTHERS),
+  PERIDOT(7, "peridot", 0.50f, 0.85f, 0.10f, GemAbility.PERIDOT_POISON_BLAST),
+  SAPPHIRE(8, "sapphire", 0.05f, 0.30f, 0.95f, GemAbility.SAPPHIRE_LIGHTNING),
+  TOURMALINE(9, "tourmaline", 0.95f, 0.30f, 0.55f, GemAbility.TOURMALINE_BODY_DOUBLE, GemAbility.TOURMALINE_FIGHTING_MIMIC),
+  TOPAZ(10, "topaz", 1.00f, 0.75f, 0.05f, GemAbility.TOPAZ_WARP),
+  ZIRCON(11, "zircon", 0.85f, 0.95f, 1.00f, GemAbility.ZIRCON_FREEZE);
 
   public static final Codec<GemType> CODEC = StringRepresentable.fromEnum(GemType::values);
   private static final IntFunction<GemType> BY_ID = ByIdMap.continuous(GemType::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
   private final int id;
-
   private final String name;
+  private final float r, g, b;
   private final List<GemAbility> abilities;
 
-  GemType(int id, String name, GemAbility... abilities) {
+  GemType(int id, String name, float r, float g, float b, GemAbility... abilities) {
     this.id = id;
     this.name = name;
+    this.r = r;
+    this.g = g;
+    this.b = b;
     this.abilities = List.of(abilities);
+  }
+
+  public float[] getColor() {
+    return new float[]{r, g, b};
   }
 
   public static GemType byId(int pId) {
