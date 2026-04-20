@@ -8,6 +8,7 @@ import io.github.jason13official.zodiac_gems.impl.common.util.GemAbility;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -58,12 +59,16 @@ public class GemAbilityActivator {
   @SuppressWarnings("all")
   public static void activate(GemAbility ability, ServerPlayer player) {
     ServerLevel level = player.serverLevel();
+    double ex = player.getX(), ey = player.getEyeY(), ez = player.getZ();
     switch (ability) {
 
       case GARNET_FIREBALL -> {
         if (player.getCooldowns().getCooldownPercent(ModItems.GARNET, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.FLAME, ex, ey, ez, 20, 0.3, 0.3, 0.3, 0.05);
+        level.sendParticles(ParticleTypes.LARGE_SMOKE, ex, ey, ez, 8, 0.3, 0.3, 0.3, 0.02);
+        level.playSound(null, ex, ey, ez, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 0.9f);
         Vec3 look = player.getLookAngle();
         LargeFireball fireball = new LargeFireball(level, player, look, 1);
         fireball.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
@@ -77,6 +82,9 @@ public class GemAbilityActivator {
         }
         EntityHitResult entityHit = pickLivingEntity(player, 10.0);
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+          level.sendParticles(ParticleTypes.WITCH, ex, ey, ez, 15, 0.4, 0.4, 0.4, 0.0);
+          level.sendParticles(ParticleTypes.PORTAL, ex, ey, ez, 10, 0.4, 0.4, 0.4, 0.1);
+          level.playSound(null, ex, ey, ez, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.PLAYERS, 0.8f, 1.2f);
           target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 400, 0));
           player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 8);
         }
@@ -86,6 +94,7 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.AMETHYST, 1.0f) > 0) {
           return;
         }
+        level.playSound(null, ex, ey, ez, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 0.25f, 1.5f);
         Vec3 look = player.getLookAngle();
         Vec3 eyePos = player.getEyePosition(1.0f);
         DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.6f, 0.0f, 1.0f), 1.2f);
@@ -123,6 +132,9 @@ public class GemAbilityActivator {
           for (ServerPlayer p : level.players()) {
             ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
           }
+          level.sendParticles(ParticleTypes.SPLASH, ex, ey, ez, 20, 0.4, 0.3, 0.4, 0.1);
+          level.sendParticles(ParticleTypes.DRIPPING_WATER, ex, ey, ez, 10, 0.4, 0.3, 0.4, 0.0);
+          level.playSound(null, ex, ey, ez, SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0f, 0.8f);
           EntityHitResult entityHit = pickLivingEntity(player, 10.0);
           if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
             target.hurt(level.damageSources().playerAttack(player), 6.0f);
@@ -146,6 +158,8 @@ public class GemAbilityActivator {
               for (ServerPlayer p : level.players()) {
                 ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), true), PacketDistributor.PLAYER.with(p));
               }
+              level.sendParticles(ParticleTypes.DRIPPING_WATER, ex, ey, ez, 10, 0.3, 0.3, 0.3, 0.0);
+              level.playSound(null, ex, ey, ez, SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0f, 1.2f);
               player.getCooldowns().addCooldown(ModItems.AQUAMARINE, 20 * 6);
             }
           }
@@ -156,6 +170,8 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.DIAMOND, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.ENCHANTED_HIT, ex, ey, ez, 20, 0.4, 0.4, 0.4, 0.1);
+        level.playSound(null, ex, ey, ez, SoundEvents.ARMOR_EQUIP_DIAMOND.value(), SoundSource.PLAYERS, 1.0f, 0.9f);
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 4));
         player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 2));
         player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
@@ -168,6 +184,8 @@ public class GemAbilityActivator {
         if (player.getFoodData().getFoodLevel() < 4) {
           return;
         }
+        level.sendParticles(ParticleTypes.CRIT, ex, ey, ez, 15, 0.3, 0.3, 0.3, 0.1);
+        level.playSound(null, ex, ey, ez, SoundEvents.STONE_BREAK, SoundSource.PLAYERS, 1.0f, 0.8f);
         player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 4);
         player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 3));
         player.getCooldowns().addCooldown(ModItems.DIAMOND, 20 * 6);
@@ -177,6 +195,8 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.EMERALD, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.END_ROD, ex, ey, ez, 20, 0.4, 0.4, 0.4, 0.05);
+        level.sendParticles(ParticleTypes.PORTAL, ex, ey, ez, 8, 0.4, 0.4, 0.4, 0.1);
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
             SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL,
             0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
@@ -191,6 +211,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.EMERALD, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.ENCHANTED_HIT, ex, ey, ez, 10, 0.3, 0.3, 0.3, 0.1);
+        level.sendParticles(ParticleTypes.CRIT, ex, ey, ez, 5, 0.3, 0.3, 0.3, 0.1);
+        level.playSound(null, ex, ey, ez, SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0f, 1.1f);
         ItemStack stack = new ItemStack(Items.SPECTRAL_ARROW);
         if (stack.getItem() instanceof SpectralArrowItem arrowItem) {
           AbstractArrow arrow = arrowItem.createArrow(level, stack, player, null);
@@ -205,6 +228,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.MOONSTONE, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.END_ROD, ex, ey, ez, 15, 0.4, 0.5, 0.4, 0.02);
+        level.sendParticles(ParticleTypes.GLOW, ex, ey, ez, 10, 0.4, 0.4, 0.4, 0.0);
+        level.playSound(null, ex, ey, ez, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, 1.2f);
         player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 200, 0));
         player.getCooldowns().addCooldown(ModItems.MOONSTONE, 20 * 6);
       }
@@ -213,6 +239,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.DRAGON_BREATH, ex, ey, ez, 20, 0.3, 0.3, 0.3, 0.05);
+        level.sendParticles(ParticleTypes.FLAME, ex, ey, ez, 8, 0.3, 0.3, 0.3, 0.05);
+        level.playSound(null, ex, ey, ez, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.6f, 1.6f);
         Vec3 look = player.getLookAngle();
         DragonFireball fireball = new DragonFireball(level, player, look);
         fireball.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
@@ -226,6 +255,8 @@ public class GemAbilityActivator {
         }
         EntityHitResult entityHit = pickLivingEntity(player, 30.0);
         if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+          level.sendParticles(ParticleTypes.SOUL, ex, ey, ez, 15, 0.4, 0.4, 0.4, 0.05);
+          level.playSound(null, ex, ey, ez, SoundEvents.SHULKER_SHOOT, SoundSource.PLAYERS, 1.0f, 1.0f);
           Vec3 look = player.getLookAngle();
           ShulkerBullet bullet = new ShulkerBullet(level, player, target, null);
           bullet.setPos(player.getX() + look.x * 2, player.getEyeY(), player.getZ() + look.z * 2);
@@ -238,6 +269,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.PERIDOT, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.WITCH, ex, ey, ez, 20, 0.4, 0.4, 0.4, 0.0);
+        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, ex, ey, ez, 8, 0.4, 0.4, 0.4, 0.0);
+        level.playSound(null, ex, ey, ez, SoundEvents.WITCH_THROW, SoundSource.PLAYERS, 1.0f, 1.0f);
         ThrownPotion potion = new ThrownPotion(level, player);
         potion.setItem(PotionContents.createItemStack(Items.SPLASH_POTION, Potions.STRONG_POISON));
         potion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20, 0.5f, 1.0f);
@@ -249,6 +283,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.SAPPHIRE, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.ELECTRIC_SPARK, ex, ey, ez, 25, 0.4, 0.4, 0.4, 0.1);
+        level.sendParticles(ParticleTypes.FLASH, ex, ey, ez, 1, 0.0, 0.0, 0.0, 0.0);
+        level.playSound(null, ex, ey, ez, SoundEvents.TRIDENT_THUNDER.value(), SoundSource.PLAYERS, 0.5f, 1.4f);
         HitResult hit = player.pick(30, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
           LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
@@ -263,6 +300,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.TOURMALINE, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.POOF, ex, ey, ez, 12, 0.4, 0.4, 0.4, 0.05);
+        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, ex, ey, ez, 6, 0.4, 0.4, 0.4, 0.02);
+        level.playSound(null, ex, ey, ez, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0f, 1.0f);
         PlayerBodyDouble entity = new PlayerBodyDouble(level);
         entity.setOwnerUUID(player.getUUID());
         entity.setAttacking(false);
@@ -275,6 +315,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.TOURMALINE, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.POOF, ex, ey, ez, 12, 0.4, 0.4, 0.4, 0.05);
+        level.sendParticles(ParticleTypes.ANGRY_VILLAGER, ex, ey, ez, 5, 0.4, 0.4, 0.4, 0.0);
+        level.playSound(null, ex, ey, ez, SoundEvents.RAVAGER_ROAR, SoundSource.PLAYERS, 0.7f, 1.2f);
         PlayerBodyDouble entity = new PlayerBodyDouble(level);
         entity.setOwnerUUID(player.getUUID());
         entity.setAttacking(true);
@@ -289,8 +332,11 @@ public class GemAbilityActivator {
         }
         HitResult hit = player.pick(50, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
+          level.sendParticles(ParticleTypes.REVERSE_PORTAL, ex, ey, ez, 20, 0.3, 0.5, 0.3, 0.05);
+          level.playSound(null, ex, ey, ez, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
           BlockPos pos = blockHit.getBlockPos().above();
           player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+          level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), 15, 0.3, 0.5, 0.3, 0.05);
         }
         player.getCooldowns().addCooldown(ModItems.TOPAZ, 20 * 6);
       }
@@ -299,6 +345,9 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.ZIRCON, 1.0f) > 0) {
           return;
         }
+        level.sendParticles(ParticleTypes.SNOWFLAKE, ex, ey, ez, 40, 5.0, 2.0, 5.0, 0.0);
+        level.sendParticles(ParticleTypes.WHITE_ASH, ex, ey, ez, 20, 5.0, 2.0, 5.0, 0.0);
+        level.playSound(null, ex, ey, ez, SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0f, 0.7f);
         AABB box = player.getBoundingBox().inflate(10);
         level.getEntitiesOfClass(LivingEntity.class, box, e -> e != player).forEach(e -> {
           e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 6, 10, true, true));

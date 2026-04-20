@@ -6,6 +6,7 @@ import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -49,29 +50,38 @@ public class LivingUpdateEventHandler {
 
     if (GemType.getHeldGem(player) == GemType.RUBY) {
       if (RubyFloatJumpTracker.isJumping(player.getUUID())) {
-        // hold space + ruby → levitate up; renewed every 2 ticks so it never expires
+        // hold space → levitate up; renewed every 2 ticks so it never expires
+        player.removeEffect(MobEffects.SLOW_FALLING);
         applyEffect(player, MobEffects.LEVITATION, 4, 1);
         var gravity = player.getAttribute(Attributes.GRAVITY);
         if (gravity != null) gravity.setBaseValue(0.0);
         player.fallDistance = 0;
+        if (level.getGameTime() % 10 == 0) {
+          ((ServerLevel) level).sendParticles(ParticleTypes.END_ROD,
+              player.getX(), player.getY() + 0.5, player.getZ(), 3, 0.2, 0.2, 0.2, 0.01);
+        }
       } else if (!player.onGround()) {
-        // released space while airborne → gentle drift down
+        // airborne without space → passive slow fall (SLOW_FALLING only caps gravity when y≤0)
         player.removeEffect(MobEffects.LEVITATION);
         var gravity = player.getAttribute(Attributes.GRAVITY);
-        if (gravity != null) gravity.setBaseValue(0.002);
+        if (gravity != null) gravity.setBaseValue(0.08);
+        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 4, 0, true, false));
+        player.fallDistance = 0;
       } else {
-        // on ground, not pressing space → normal gravity
+        // on ground → clean up all hover effects, normal gravity
         player.removeEffect(MobEffects.LEVITATION);
+        player.removeEffect(MobEffects.SLOW_FALLING);
         var gravity = player.getAttribute(Attributes.GRAVITY);
         if (gravity != null) gravity.setBaseValue(0.08);
       }
     } else {
-      // ruby removed from hand → clean up hover state
-      var gravity = player.getAttribute(Attributes.GRAVITY);
-      if (gravity != null && gravity.getBaseValue() != 0.08) {
+      // ruby removed from hand → clean up
+      if (player.hasEffect(MobEffects.LEVITATION) || player.hasEffect(MobEffects.SLOW_FALLING)) {
         RubyFloatJumpTracker.remove(player.getUUID());
         player.removeEffect(MobEffects.LEVITATION);
-        gravity.setBaseValue(0.08);
+        player.removeEffect(MobEffects.SLOW_FALLING);
+        var gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.08);
       }
     }
 
