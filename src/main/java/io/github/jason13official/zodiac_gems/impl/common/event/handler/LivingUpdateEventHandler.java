@@ -55,7 +55,7 @@ public class LivingUpdateEventHandler {
     GemType heldGemType = GemType.getHeldGem(player);
 
     if (heldGemType != GemType.SAPPHIRE) {
-      SapphireSignalTracker.remove(player.getUUID());
+      SapphireSignalTracker.remove(player.getUUID(), player.level());
     }
 
     if (heldGemType == null) return;
@@ -74,7 +74,7 @@ public class LivingUpdateEventHandler {
         }
       }
       case PERIDOT -> player.removeEffect(MobEffects.POISON);
-      case SAPPHIRE -> SapphireSignalTracker.update(player.getUUID(), player.blockPosition());
+      case SAPPHIRE -> SapphireSignalTracker.update(player.getUUID(), player.blockPosition(), player.level());
       case TOPAZ -> player.getActiveEffects().stream()
           .filter(e -> e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)
           .map(e -> e.getEffect())

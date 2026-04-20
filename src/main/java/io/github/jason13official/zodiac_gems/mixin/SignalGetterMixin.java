@@ -20,4 +20,5 @@ public class SignalGetterMixin {
       cir.setReturnValue(15);
     }
   }
+
 }
