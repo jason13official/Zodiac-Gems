@@ -128,6 +128,28 @@ public class GemAbilityActivator {
           return;
         }
         if (WaterbendTracker.isActive(player.getUUID())) {
+          // resolve target before committing to release so water is never silently lost
+          EntityHitResult entityHit = pickLivingEntity(player, 10.0);
+          HitResult blockHit = player.pick(10.0, 1.0f, false);
+          if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+            target.hurt(level.damageSources().playerAttack(player), 6.0f);
+            Vec3 knockDir = target.position().subtract(player.position()).normalize();
+            target.setDeltaMovement(knockDir.x * 1.5, 0.4, knockDir.z * 1.5);
+            level.setBlock(target.blockPosition(), Blocks.WATER.defaultBlockState(), 3);
+          } else if (blockHit instanceof BlockHitResult bhr && blockHit.getType() != HitResult.Type.MISS) {
+            level.setBlock(bhr.getBlockPos().relative(bhr.getDirection()), Blocks.WATER.defaultBlockState(), 3);
+          } else {
+            // no entity or block in range — place mid-air along look vector
+            Vec3 look = player.getLookAngle();
+            Vec3 eye = player.getEyePosition();
+            for (int dist = 5; dist >= 1; dist--) {
+              BlockPos midPos = BlockPos.containing(eye.add(look.scale(dist)));
+              if (level.getBlockState(midPos).canBeReplaced()) {
+                level.setBlock(midPos, Blocks.WATER.defaultBlockState(), 3);
+                break;
+              }
+            }
+          }
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : level.players()) {
             ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
@@ -135,18 +157,6 @@ public class GemAbilityActivator {
           level.sendParticles(ParticleTypes.SPLASH, ex, ey, ez, 20, 0.4, 0.3, 0.4, 0.1);
           level.sendParticles(ParticleTypes.DRIPPING_WATER, ex, ey, ez, 10, 0.4, 0.3, 0.4, 0.0);
           level.playSound(null, ex, ey, ez, SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0f, 0.8f);
-          EntityHitResult entityHit = pickLivingEntity(player, 10.0);
-          if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
-            target.hurt(level.damageSources().playerAttack(player), 6.0f);
-            Vec3 knockDir = target.position().subtract(player.position()).normalize();
-            target.setDeltaMovement(knockDir.x * 1.5, 0.4, knockDir.z * 1.5);
-            level.setBlock(target.blockPosition(), Blocks.WATER.defaultBlockState(), 3);
-          } else {
-            HitResult blockHit = player.pick(10.0, 1.0f, false);
-            if (blockHit instanceof BlockHitResult bhr && blockHit.getType() != HitResult.Type.MISS) {
-              level.setBlock(bhr.getBlockPos().relative(bhr.getDirection()), Blocks.WATER.defaultBlockState(), 3);
-            }
-          }
         } else {
           HitResult hit = player.pick(10, 0, true);
           if (hit instanceof BlockHitResult blockHit) {
