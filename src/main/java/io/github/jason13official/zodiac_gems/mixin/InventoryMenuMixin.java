@@ -24,7 +24,7 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
     super(pMenuType, pContainerId);
   }
 
-  @Inject(at = @At("RETURN"), method = "<init>")
+  @Inject(at = @At("TAIL"), method = "<init>")
   private void zodiac$constructor(Inventory inventory, boolean pActive, Player pOwner, CallbackInfo ci) {
 
     Constants.LOG.info("Constructing player inventory menu instance with Aegis Diamond additional slots.");
