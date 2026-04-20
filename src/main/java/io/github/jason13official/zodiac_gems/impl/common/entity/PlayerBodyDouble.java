@@ -8,18 +8,16 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 
 public class PlayerBodyDouble extends PathfinderMob {
@@ -58,7 +56,9 @@ public class PlayerBodyDouble extends PathfinderMob {
 
   public AbstractClientPlayer getAttachedClientPlayer() {
     Optional<UUID> uuid = this.entityData.get(DATA_OWNER_UUID);
-    if (uuid.isEmpty() || !(this.level() instanceof ClientLevel cl)) return null;
+    if (uuid.isEmpty() || !(this.level() instanceof ClientLevel cl)) {
+      return null;
+    }
     Player p = cl.getPlayerByUUID(uuid.get());
     return p instanceof AbstractClientPlayer acp ? acp : null;
   }

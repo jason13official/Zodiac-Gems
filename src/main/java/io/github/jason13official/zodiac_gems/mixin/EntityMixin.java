@@ -6,7 +6,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,26 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin {
 
-  @Inject(at = @At("RETURN"), method = "load")
-  private void zodiac$load(CompoundTag pCompound, CallbackInfo ci) {
-    Entity self = (Entity) (Object) this;
-
-    if (!(self instanceof ServerPlayer player)) return;
-
-    var aegis = AdditionalInventory.aegis(player.getInventory());
-    zodiac$loadAllItems(pCompound, aegis.zodiac$getItems(), self.level().registryAccess());
-  }
-
-  @Inject(at = @At("RETURN"), method = "saveWithoutId")
-  private void zodiac$saveWithoutId(CompoundTag pCompound, CallbackInfoReturnable<CompoundTag> cir) {
-    Entity self = (Entity) (Object) this;
-
-    if (!(self instanceof ServerPlayer player)) return;
-
-    var aegis = AdditionalInventory.aegis(player.getInventory());
-    zodiac$saveAllItems(pCompound, aegis.zodiac$getItems(), true, self.level().registryAccess());
-  }
-
   @Unique
   private static CompoundTag zodiac$saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, boolean pAlwaysPutTag, HolderLookup.Provider pLevelRegistry) {
     ListTag listtag = new ListTag();
@@ -47,7 +26,7 @@ public class EntityMixin {
       ItemStack itemstack = pItems.get(i);
       if (!itemstack.isEmpty()) {
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putByte("ZodiacSlot", (byte)i);
+        compoundtag.putByte("ZodiacSlot", (byte) i);
         listtag.add(itemstack.save(pLevelRegistry, compoundtag));
       }
     }
@@ -70,5 +49,29 @@ public class EntityMixin {
         pItems.set(j, ItemStack.parse(pLevelRegistry, compoundtag).orElse(ItemStack.EMPTY));
       }
     }
+  }
+
+  @Inject(at = @At("RETURN"), method = "load")
+  private void zodiac$load(CompoundTag pCompound, CallbackInfo ci) {
+    Entity self = (Entity) (Object) this;
+
+    if (!(self instanceof ServerPlayer player)) {
+      return;
+    }
+
+    var aegis = AdditionalInventory.aegis(player.getInventory());
+    zodiac$loadAllItems(pCompound, aegis.zodiac$getItems(), self.level().registryAccess());
+  }
+
+  @Inject(at = @At("RETURN"), method = "saveWithoutId")
+  private void zodiac$saveWithoutId(CompoundTag pCompound, CallbackInfoReturnable<CompoundTag> cir) {
+    Entity self = (Entity) (Object) this;
+
+    if (!(self instanceof ServerPlayer player)) {
+      return;
+    }
+
+    var aegis = AdditionalInventory.aegis(player.getInventory());
+    zodiac$saveAllItems(pCompound, aegis.zodiac$getItems(), true, self.level().registryAccess());
   }
 }

@@ -16,7 +16,9 @@ public class SapphireSignalTracker {
   public static void update(UUID playerId, BlockPos pos, Level level) {
     long newLong = pos.asLong();
     Long old = playerPositions.get(playerId);
-    if (old != null && old == newLong) return;
+    if (old != null && old == newLong) {
+      return;
+    }
     playerPositions.put(playerId, newLong);
     if (old != null) {
       activePositions.remove(old);

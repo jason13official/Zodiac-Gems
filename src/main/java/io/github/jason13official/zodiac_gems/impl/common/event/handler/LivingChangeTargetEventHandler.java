@@ -7,7 +7,11 @@ import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 public class LivingChangeTargetEventHandler {
 
   public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
-    if (!(event.getNewTarget() instanceof ServerPlayer player)) return;
-    if (GemType.getHeldGem(player) == GemType.MOONSTONE) event.setCanceled(true);
+    if (!(event.getNewTarget() instanceof ServerPlayer player)) {
+      return;
+    }
+    if (GemType.getHeldGem(player) == GemType.MOONSTONE) {
+      event.setCanceled(true);
+    }
   }
 }

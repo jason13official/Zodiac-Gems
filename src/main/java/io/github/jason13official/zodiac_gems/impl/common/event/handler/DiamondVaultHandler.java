@@ -19,14 +19,20 @@ public class DiamondVaultHandler {
   private static final Map<UUID, List<ItemStack>> vault = new HashMap<>();
 
   public static void onPlayerDeath(LivingDeathEvent event) {
-    if (!(event.getEntity() instanceof ServerPlayer player)) return;
-    if (GemType.getHeldGem(player) != GemType.DIAMOND) return;
+    if (!(event.getEntity() instanceof ServerPlayer player)) {
+      return;
+    }
+    if (GemType.getHeldGem(player) != GemType.DIAMOND) {
+      return;
+    }
 
     AdditionalInventory aegis = () -> ((AdditionalInventory) player.getInventory()).zodiac$getItems();
     List<ItemStack> saved = new ArrayList<>();
     for (int i = 0; i < aegis.getContainerSize() && saved.size() < VAULT_SIZE; i++) {
       ItemStack stack = aegis.getItem(i);
-      if (stack.isEmpty() || stack.getItem() instanceof ZodiacGemItem) continue;
+      if (stack.isEmpty() || stack.getItem() instanceof ZodiacGemItem) {
+        continue;
+      }
       saved.add(stack.copy());
       aegis.setItem(i, ItemStack.EMPTY);
     }
@@ -37,10 +43,14 @@ public class DiamondVaultHandler {
   }
 
   public static void onPlayerClone(PlayerEvent.Clone event) {
-    if (!event.isWasDeath()) return;
+    if (!event.isWasDeath()) {
+      return;
+    }
     UUID id = event.getOriginal().getUUID();
     List<ItemStack> saved = vault.remove(id);
-    if (saved == null) return;
+    if (saved == null) {
+      return;
+    }
     ServerPlayer newPlayer = (ServerPlayer) event.getEntity();
     AdditionalInventory aegis = () -> ((AdditionalInventory) newPlayer.getInventory()).zodiac$getItems();
 
@@ -59,5 +69,6 @@ public class DiamondVaultHandler {
 
   }
 
-  public static void onSavePlayer(PlayerEvent.SaveToFile event) {}
+  public static void onSavePlayer(PlayerEvent.SaveToFile event) {
+  }
 }

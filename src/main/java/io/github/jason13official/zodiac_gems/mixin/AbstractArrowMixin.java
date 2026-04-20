@@ -2,7 +2,6 @@ package io.github.jason13official.zodiac_gems.mixin;
 
 import io.github.jason13official.zodiac_gems.accessor.ArrowLifeAccessor;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
