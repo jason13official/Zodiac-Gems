@@ -20,8 +20,9 @@ public interface AdditionalInventory extends Container {
 
     if (stack.getItem() instanceof ZodiacGemItem) {
       return false;
-    } else
+    } else {
       return !ZodiacGems.travelersBackpackInstalled || !TravelersBackpackIMC.isBackpack(stack);
+    }
   }
 
   NonNullList<ItemStack> zodiac$getItems();
