@@ -1,6 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
-import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatTracker;
+import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatJumpTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.SapphireSignalTracker;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
@@ -47,13 +47,32 @@ public class LivingUpdateEventHandler {
       return;
     }
 
-    if (RubyFloatTracker.isActive(player.getUUID()) && level.getGameTime() >= RubyFloatTracker.getExpiry(player.getUUID())) {
-      RubyFloatTracker.remove(player.getUUID());
+    if (GemType.getHeldGem(player) == GemType.RUBY) {
+      if (RubyFloatJumpTracker.isJumping(player.getUUID())) {
+        // hold space + ruby → levitate up; renewed every 2 ticks so it never expires
+        applyEffect(player, MobEffects.LEVITATION, 4, 1);
+        var gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.0);
+        player.fallDistance = 0;
+      } else if (!player.onGround()) {
+        // released space while airborne → gentle drift down
+        player.removeEffect(MobEffects.LEVITATION);
+        var gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.002);
+      } else {
+        // on ground, not pressing space → normal gravity
+        player.removeEffect(MobEffects.LEVITATION);
+        var gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.08);
+      }
+    } else {
+      // ruby removed from hand → clean up hover state
       var gravity = player.getAttribute(Attributes.GRAVITY);
-      if (gravity != null) {
+      if (gravity != null && gravity.getBaseValue() != 0.08) {
+        RubyFloatJumpTracker.remove(player.getUUID());
+        player.removeEffect(MobEffects.LEVITATION);
         gravity.setBaseValue(0.08);
       }
-      player.fallDistance = 0;
     }
 
     GemType heldGemType = GemType.getHeldGem(player);

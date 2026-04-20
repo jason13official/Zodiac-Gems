@@ -209,22 +209,6 @@ public class GemAbilityActivator {
         player.getCooldowns().addCooldown(ModItems.MOONSTONE, 20 * 6);
       }
 
-      case RUBY_FLOAT -> {
-        if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) {
-          return;
-        }
-        var gravity = player.getAttribute(Attributes.GRAVITY);
-        if (gravity != null) {
-          gravity.setBaseValue(0.0);
-        }
-        // player.setDeltaMovement(player.getDeltaMovement().x, 0.4, player.getDeltaMovement().z);
-        player.setDeltaMovement(player.getDeltaMovement().x, 0.8, player.getDeltaMovement().z);
-        player.hasImpulse = true;
-        player.fallDistance = 0;
-        RubyFloatTracker.start(player.getUUID(), level.getGameTime() + 100);
-        player.getCooldowns().addCooldown(ModItems.RUBY, 20 * 6);
-      }
-
       case RUBY_DRAGON_BREATH -> {
         if (player.getCooldowns().getCooldownPercent(ModItems.RUBY, 1.0f) > 0) {
           return;

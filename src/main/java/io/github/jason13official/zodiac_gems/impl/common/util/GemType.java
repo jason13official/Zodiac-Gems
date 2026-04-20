@@ -17,7 +17,7 @@ public enum GemType implements StringRepresentable {
   DIAMOND(3, "diamond", 0.70f, 0.90f, 1.00f, GemAbility.DIAMOND_TURTLE, GemAbility.DIAMOND_TUNNEL),
   EMERALD(4, "emerald", 0.00f, 0.80f, 0.20f, GemAbility.EMERALD_TELEPORT, GemAbility.EMERALD_SPECTRAL_ARROW),
   MOONSTONE(5, "moonstone", 0.95f, 0.95f, 0.70f, GemAbility.MOONSTONE_SLOW_FALLING),
-  RUBY(6, "ruby", 0.90f, 0.05f, 0.20f, GemAbility.RUBY_FLOAT, GemAbility.RUBY_DRAGON_BREATH, GemAbility.RUBY_FLOAT_OTHERS),
+  RUBY(6, "ruby", 0.90f, 0.05f, 0.20f, GemAbility.RUBY_DRAGON_BREATH, GemAbility.RUBY_FLOAT_OTHERS),
   PERIDOT(7, "peridot", 0.50f, 0.85f, 0.10f, GemAbility.PERIDOT_POISON_BLAST),
   SAPPHIRE(8, "sapphire", 0.05f, 0.30f, 0.95f, GemAbility.SAPPHIRE_LIGHTNING),
   TOURMALINE(9, "tourmaline", 0.95f, 0.30f, 0.55f, GemAbility.TOURMALINE_BODY_DOUBLE, GemAbility.TOURMALINE_FIGHTING_MIMIC),

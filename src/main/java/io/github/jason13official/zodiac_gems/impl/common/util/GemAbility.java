@@ -25,7 +25,6 @@ public enum GemAbility {
   MOONSTONE_SLOW_FALLING,
 
   // Ruby
-  RUBY_FLOAT,
   RUBY_DRAGON_BREATH,
   RUBY_FLOAT_OTHERS,
 

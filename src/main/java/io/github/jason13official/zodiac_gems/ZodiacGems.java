@@ -3,6 +3,7 @@ package io.github.jason13official.zodiac_gems;
 import io.github.jason13official.zodiac_gems.impl.common.ability.InvisibilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.NametagTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
+import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatJumpTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.WaterbendTracker;
 import io.github.jason13official.zodiac_gems.impl.common.command.ZodiacCommands;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.DiamondVaultHandler;
@@ -92,6 +93,7 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {
         PlayerAbilityTracker.reset(player.getUUID());
+        RubyFloatJumpTracker.remove(player.getUUID());
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {

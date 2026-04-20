@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.mixin;
 
+import io.github.jason13official.zodiac_gems.Constants;
 import io.github.jason13official.zodiac_gems.accessor.AdditionalInventory;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,6 +26,8 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
 
   @Inject(at = @At("RETURN"), method = "<init>")
   private void zodiac$constructor(Inventory inventory, boolean pActive, Player pOwner, CallbackInfo ci) {
+
+    Constants.LOG.info("Constructing player inventory menu instance with Aegis Diamond additional slots.");
 
     AdditionalInventory aegis = () -> ((AdditionalInventory) inventory).zodiac$getItems();
 

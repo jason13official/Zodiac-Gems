@@ -3,6 +3,7 @@ package io.github.jason13official.zodiac_gems;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.jason13official.zodiac_gems.impl.client.renderer.PlayerBodyDoubleRenderer;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.RubyFloatJumpC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
@@ -43,6 +44,8 @@ public class ZodiacGemsClient {
   public static final List<UUID> WATERBEND_TRACKER = new ArrayList<>();
   public static final Map<UUID, UUID> HIDDEN_PLAYERS = new HashMap<>();
   public static final Set<UUID> HIDDEN_NAMETAGS = new HashSet<>();
+
+  private boolean rubyJumpKeyWasDown = false;
 
   public ZodiacGemsClient(final IEventBus modEventBus) {
 
@@ -91,6 +94,18 @@ public class ZodiacGemsClient {
           level.addParticle(ParticleTypes.DRIPPING_WATER, ballPos.x + ox, ballPos.y + oy, ballPos.z + oz, 0, 0, 0);
         }
       }
+    }
+
+    Minecraft mc2 = Minecraft.getInstance();
+    if (mc2.player != null && mc2.player.input != null && GemType.getHeldGem(mc2.player) == GemType.RUBY) {
+      boolean jumpDown = mc2.player.input.jumping;
+      if (jumpDown != rubyJumpKeyWasDown) {
+        rubyJumpKeyWasDown = jumpDown;
+        ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(jumpDown), PacketDistributor.SERVER.noArg());
+      }
+    } else if (rubyJumpKeyWasDown) {
+      rubyJumpKeyWasDown = false;
+      ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(false), PacketDistributor.SERVER.noArg());
     }
 
     while (USE_ABILITY.get().consumeClick()) {
