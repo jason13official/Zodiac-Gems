@@ -1,5 +1,8 @@
 package io.github.jason13official.zodiac_gems.accessor;
 
+import io.github.jason13official.zodiac_gems.ZodiacGems;
+import io.github.jason13official.zodiac_gems.impl.common.imc.TravelersBackpackIMC;
+import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -11,6 +14,14 @@ public interface AdditionalInventory extends Container {
 
   static AdditionalInventory aegis(Inventory inventory) {
     return () -> ((AdditionalInventory) inventory).zodiac$getItems();
+  }
+
+  static boolean isAllowed(ItemStack stack) {
+
+    if (stack.getItem() instanceof ZodiacGemItem) {
+      return false;
+    } else
+      return !ZodiacGems.travelersBackpackInstalled || !TravelersBackpackIMC.isBackpack(stack);
   }
 
   NonNullList<ItemStack> zodiac$getItems();

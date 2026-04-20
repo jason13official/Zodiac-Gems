@@ -20,7 +20,9 @@ public class PlayerAbilityTracker {
   }
 
   public static void cycle(ServerPlayer player, GemType type) {
-    if (type.getAbilityCount() <= 1) return;
+    if (type.getAbilityCount() <= 1) {
+      return;
+    }
     selectedIndex
         .computeIfAbsent(player.getUUID(), k -> new HashMap<>())
         .merge(type, 1, (cur, inc) -> (cur + inc) % type.getAbilityCount());

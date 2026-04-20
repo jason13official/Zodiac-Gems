@@ -21,6 +21,18 @@ public class ToggleDarknessS2CPacket {
     this.darkness = data.readBoolean();
   }
 
+  public static void handle(ToggleDarknessS2CPacket packet, CustomPayloadEvent.Context context) {
+    Constants.LOG.info("Handling ToggleAbilityPacket.");
+    context.enqueueWork(() -> {
+      if (!ZodiacGemsClient.DARKNESS_TRACKER.contains(packet.getId()) && packet.hasDarkness()) {
+        ZodiacGemsClient.DARKNESS_TRACKER.add(packet.getId());
+      } else if (ZodiacGemsClient.DARKNESS_TRACKER.contains(packet.getId()) && !packet.hasDarkness()) {
+        ZodiacGemsClient.DARKNESS_TRACKER.remove(packet.getId());
+      }
+    });
+    context.setPacketHandled(true);
+  }
+
   public void encode(FriendlyByteBuf data) {
     data.writeUUID(this.uuid);
     data.writeBoolean(this.darkness);
@@ -32,17 +44,5 @@ public class ToggleDarknessS2CPacket {
 
   public boolean hasDarkness() {
     return darkness;
-  }
-
-  public static void handle(ToggleDarknessS2CPacket packet, CustomPayloadEvent.Context context) {
-    Constants.LOG.info("Handling ToggleAbilityPacket.");
-    context.enqueueWork(() -> {
-      if (!ZodiacGemsClient.DARKNESS_TRACKER.contains(packet.getId()) && packet.hasDarkness()) {
-        ZodiacGemsClient.DARKNESS_TRACKER.add(packet.getId());
-      } else if (ZodiacGemsClient.DARKNESS_TRACKER.contains(packet.getId()) && !packet.hasDarkness()) {
-        ZodiacGemsClient.DARKNESS_TRACKER.remove(packet.getId());
-      }
-    });
-    context.setPacketHandled(true);
   }
 }

@@ -18,7 +18,7 @@ public class ModTabs {
     Constants.LOG.info("ZodiacGems CreativeModeTab.");
 
     ZODIAC_GEMS = CreativeModeTab.builder()
-        .withTabsBefore(CreativeModeTabs.OP_BLOCKS)
+        .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
         .icon(() -> new ItemStack(ModItems.EMERALD))
         .title(Component.translatable("itemGroup.zodiacGems"))
         .displayItems((parameters, output) -> {

@@ -7,7 +7,11 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 public class LivingFallEventHandler {
 
   public static void onLivingFall(LivingFallEvent event) {
-    if (!(event.getEntity() instanceof ServerPlayer player)) return;
-    if (GemType.getHeldGem(player) == GemType.ZIRCON) event.setCanceled(true);
+    if (!(event.getEntity() instanceof ServerPlayer player)) {
+      return;
+    }
+    if (GemType.getHeldGem(player) == GemType.ZIRCON) {
+      event.setCanceled(true);
+    }
   }
 }

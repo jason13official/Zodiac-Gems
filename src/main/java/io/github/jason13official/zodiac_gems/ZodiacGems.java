@@ -44,8 +44,14 @@ import net.minecraftforge.registries.RegisterEvent;
 public class ZodiacGems {
 
   public static IEventBus EVENT_BUS;
+  public static boolean travelersBackpackInstalled = false;
 
   public ZodiacGems(FMLJavaModLoadingContext context) {
+
+    if (FMLLoader.getLoadingModList().getModFileById("travelersbackpack") != null) {
+      Constants.LOG.info("travelersbackpack mod ID loaded.");
+      travelersBackpackInstalled = true;
+    }
 
     Constants.LOG.info("ZodiacGems Common.");
 
@@ -59,12 +65,12 @@ public class ZodiacGems {
       ZodiacNetwork.init();
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<EntityItemPickupEvent>) ItemPickupEventHandler::onItemPickup);
+    MinecraftForge.EVENT_BUS.addListener(ItemPickupEventHandler::onItemPickup);
     MinecraftForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
     MinecraftForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
     MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
-    MinecraftForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) DiamondVaultHandler::onPlayerDeath);
-    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) DiamondVaultHandler::onPlayerClone);
+    MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerDeath);
+    MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerClone);
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {

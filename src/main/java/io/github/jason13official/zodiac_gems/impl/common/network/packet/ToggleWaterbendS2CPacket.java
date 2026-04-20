@@ -20,11 +20,6 @@ public class ToggleWaterbendS2CPacket {
     this.active = data.readBoolean();
   }
 
-  public void encode(FriendlyByteBuf data) {
-    data.writeUUID(this.uuid);
-    data.writeBoolean(this.active);
-  }
-
   public static void handle(ToggleWaterbendS2CPacket packet, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> {
       if (packet.active && !ZodiacGemsClient.WATERBEND_TRACKER.contains(packet.uuid)) {
@@ -34,5 +29,10 @@ public class ToggleWaterbendS2CPacket {
       }
     });
     context.setPacketHandled(true);
+  }
+
+  public void encode(FriendlyByteBuf data) {
+    data.writeUUID(this.uuid);
+    data.writeBoolean(this.active);
   }
 }

@@ -19,19 +19,21 @@ public class UseAbilityC2SPacket {
     // this.gemType = GemType.byId(data.readByte());
   }
 
-  public void encode(FriendlyByteBuf data) {
-    // data.writeByte(this.gemType.getId());
-  }
-
   public static void handle(UseAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
 
     Constants.LOG.info("Handling UseAbilityPacket.");
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
-      if (player == null) return;
+      if (player == null) {
+        return;
+      }
 
       GemAbilityActivator.activate(player);
     });
     context.setPacketHandled(true);
+  }
+
+  public void encode(FriendlyByteBuf data) {
+    // data.writeByte(this.gemType.getId());
   }
 }

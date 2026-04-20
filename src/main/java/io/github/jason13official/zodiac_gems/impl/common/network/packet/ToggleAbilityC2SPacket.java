@@ -9,22 +9,29 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ToggleAbilityC2SPacket {
 
-  public ToggleAbilityC2SPacket() {}
+  public ToggleAbilityC2SPacket() {
+  }
 
-  public ToggleAbilityC2SPacket(FriendlyByteBuf data) {}
-
-  public void encode(FriendlyByteBuf data) {}
+  public ToggleAbilityC2SPacket(FriendlyByteBuf data) {
+  }
 
   public static void handle(ToggleAbilityC2SPacket packet, CustomPayloadEvent.Context context) {
 
     Constants.LOG.info("Handling ToggleAbilityPacket.");
     context.enqueueWork(() -> {
       ServerPlayer player = context.getSender();
-      if (player == null) return;
+      if (player == null) {
+        return;
+      }
       GemType type = GemType.getHeldGem(player);
-      if (type == null) return;
+      if (type == null) {
+        return;
+      }
       PlayerAbilityTracker.cycle(player, type);
     });
     context.setPacketHandled(true);
+  }
+
+  public void encode(FriendlyByteBuf data) {
   }
 }

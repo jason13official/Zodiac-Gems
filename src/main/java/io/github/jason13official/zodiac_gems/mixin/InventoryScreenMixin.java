@@ -14,7 +14,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -27,6 +26,12 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
   /// dummy
   public InventoryScreenMixin(InventoryMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
+  }
+
+  private static void render(InventoryScreen screen, GuiGraphics pGuiGraphics) {
+    // pGuiGraphics.blit(ZODIAC$INVENTORY_LOCATION, 1, (142 + 39) - 7, 0, 0, 176, 32);
+    // pGuiGraphics.blit(ZODIAC$INVENTORY_LOCATION, 5, 5, 0, 0, 176, 32);
+    pGuiGraphics.blitSprite(ZODIAC$INVENTORY_LOCATION, screen.getGuiLeft(), screen.getGuiTop() + screen.getYSize(), 176, 32);
   }
 
   @Inject(at = @At("HEAD"), method = "renderBg")
@@ -51,11 +56,5 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     pGuiGraphics.pose().pushPose();
     render((InventoryScreen) (Object) this, pGuiGraphics);
     pGuiGraphics.pose().popPose();
-  }
-
-  private static void render(InventoryScreen screen, GuiGraphics pGuiGraphics) {
-    // pGuiGraphics.blit(ZODIAC$INVENTORY_LOCATION, 1, (142 + 39) - 7, 0, 0, 176, 32);
-    // pGuiGraphics.blit(ZODIAC$INVENTORY_LOCATION, 5, 5, 0, 0, 176, 32);
-    pGuiGraphics.blitSprite(ZODIAC$INVENTORY_LOCATION, screen.getGuiLeft(), screen.getGuiTop() + screen.getYSize(), 176, 32);
   }
 }

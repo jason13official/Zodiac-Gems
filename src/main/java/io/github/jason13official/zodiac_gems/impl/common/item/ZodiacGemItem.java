@@ -18,6 +18,16 @@ public class ZodiacGemItem extends Item {
     this.gemType = gemType;
   }
 
+  private static MutableComponent passive(String text) {
+    return Component.literal("Passive: ").withStyle(ChatFormatting.GRAY)
+        .append(Component.literal(text).withStyle(ChatFormatting.WHITE));
+  }
+
+  private static MutableComponent active(String text) {
+    return Component.literal("Active: ").withStyle(ChatFormatting.YELLOW)
+        .append(Component.literal(text).withStyle(ChatFormatting.WHITE));
+  }
+
   public GemType getGemType() {
     return this.gemType;
   }
@@ -43,8 +53,8 @@ public class ZodiacGemItem extends Item {
 
       case DIAMOND -> {
         list.add(passive("9 inventory slots kept on death"));
-        list.add(active("Turtle Master — Resistance IV (6s cooldown)"));
-        list.add(active("Fast Tunneling — Haste IV, costs hunger (6s cooldown)"));
+        list.add(active("Turtle Master — Slowness V + Resistance III for 10s (6s cooldown)"));
+        list.add(active("Fast Tunneling — Haste IV for 10s, costs 4 hunger (6s cooldown)"));
       }
 
       case EMERALD -> {
@@ -54,7 +64,6 @@ public class ZodiacGemItem extends Item {
 
       case MOONSTONE -> {
         list.add(passive("Night Vision"));
-        list.add(passive("Slow Falling"));
         list.add(passive("Regeneration at night"));
         list.add(passive("Mobs not hostile to holder"));
         list.add(active("Trigger Slow Falling burst (6s cooldown)"));
@@ -72,8 +81,8 @@ public class ZodiacGemItem extends Item {
       }
 
       case SAPPHIRE -> {
-        list.add(passive("Emits Redstone signal (strength 15)"));
         list.add(active("Lightning Strike — weakened (12s cooldown)"));
+        list.add(passive("Emits Redstone signal (strength 15)"));
       }
 
       case TOURMALINE -> {
@@ -82,7 +91,7 @@ public class ZodiacGemItem extends Item {
       }
 
       case TOPAZ -> {
-        list.add(passive("No harmful effects"));
+        list.add(passive("No potion damage"));
         list.add(active("Warp to cursor — 50-block raycast (6s cooldown)"));
       }
 
@@ -91,15 +100,5 @@ public class ZodiacGemItem extends Item {
         list.add(active("Freeze nearby entities 6s (30s cooldown)"));
       }
     }
-  }
-
-  private static MutableComponent passive(String text) {
-    return Component.literal("Passive: ").withStyle(ChatFormatting.GRAY)
-        .append(Component.literal(text).withStyle(ChatFormatting.WHITE));
-  }
-
-  private static MutableComponent active(String text) {
-    return Component.literal("Active: ").withStyle(ChatFormatting.YELLOW)
-        .append(Component.literal(text).withStyle(ChatFormatting.WHITE));
   }
 }

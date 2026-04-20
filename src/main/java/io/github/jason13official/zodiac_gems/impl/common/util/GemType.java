@@ -40,10 +40,6 @@ public enum GemType implements StringRepresentable {
     this.abilities = List.of(abilities);
   }
 
-  public float[] getColor() {
-    return new float[]{r, g, b};
-  }
-
   public static GemType byId(int pId) {
     return BY_ID.apply(pId);
   }
@@ -55,6 +51,10 @@ public enum GemType implements StringRepresentable {
       }
     }
     return null;
+  }
+
+  public float[] getColor() {
+    return new float[]{r, g, b};
   }
 
   public int getId() {
@@ -84,7 +84,9 @@ public enum GemType implements StringRepresentable {
 
   /// wraps values with modules `%` so we can just increment using `++` to get next valid ability index
   public GemAbility getAbility(int index) {
-    if (abilities.isEmpty()) return null;
+    if (abilities.isEmpty()) {
+      return null;
+    }
     return abilities.get(index % abilities.size());
   }
 }
