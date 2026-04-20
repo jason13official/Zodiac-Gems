@@ -4,6 +4,7 @@ import io.github.jason13official.zodiac_gems.accessor.AdditionalInventory;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -32,17 +33,22 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
     // the original inventory, being cast to a separate class. (re-exposes the same items)
     // AdditionalInventory aegis = (AdditionalInventory) inventory;
 
-    AtomicBoolean hasDiamond = new AtomicBoolean(false);
+//    AtomicBoolean hasDiamond = new AtomicBoolean(false);
+//
+//    pOwner.getHandSlots().forEach(stack -> {
+//      if (stack.is(ModItems.DIAMOND)) {
+//        System.out.println("player is holding our diamond");
+//        hasDiamond.set(true);
+//      }
+//    });
+//
+//    if (!hasDiamond.get()) {
+//      return;
+//    }
 
-    pOwner.getHandSlots().forEach(stack -> {
-      if (stack.is(ModItems.DIAMOND)) {
-        hasDiamond.set(true);
-      }
-    });
-
-    if (!hasDiamond.get()) {
-      return;
-    }
+//    if (!(pOwner.getMainHandItem().is(ModItems.DIAMOND) || pOwner.getOffhandItem().is(ModItems.DIAMOND))) {
+//      return;
+//    }
 
     AdditionalInventory aegis = () -> ((AdditionalInventory) inventory).zodiac$getItems();
 

@@ -54,4 +54,10 @@ public class DiamondVaultHandler {
     }
 
   }
+
+  public static void onLoadPlayer(PlayerEvent.LoadFromFile event) {
+
+  }
+
+  public static void onSavePlayer(PlayerEvent.SaveToFile event) {}
 }
