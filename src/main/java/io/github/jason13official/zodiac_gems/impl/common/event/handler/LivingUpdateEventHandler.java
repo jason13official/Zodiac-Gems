@@ -76,7 +76,7 @@ public class LivingUpdateEventHandler {
       }
     } else {
       // ruby removed from hand → clean up
-      if (player.hasEffect(MobEffects.LEVITATION) || player.hasEffect(MobEffects.SLOW_FALLING)) {
+      if (RubyFloatJumpTracker.contains(player.getUUID()) && (player.hasEffect(MobEffects.LEVITATION) || player.hasEffect(MobEffects.SLOW_FALLING))) {
         RubyFloatJumpTracker.remove(player.getUUID());
         player.removeEffect(MobEffects.LEVITATION);
         player.removeEffect(MobEffects.SLOW_FALLING);

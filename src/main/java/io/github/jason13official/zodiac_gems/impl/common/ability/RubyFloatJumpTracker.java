@@ -20,4 +20,8 @@ public class RubyFloatJumpTracker {
   public static void remove(UUID player) {
     jumping.remove(player);
   }
+
+  public static boolean contains(UUID player) {
+    return jumping.contains(player);
+  }
 }

@@ -36,6 +36,15 @@ public class PlayerBodyDouble extends PathfinderMob {
   }
 
   @Override
+  public void tick() {
+    super.tick();
+
+    if (this.tickCount >= 200) {
+      this.discard();
+    }
+  }
+
+  @Override
   protected void defineSynchedData(SynchedEntityData.Builder builder) {
     super.defineSynchedData(builder);
     builder.define(DATA_ATTACKING, false);

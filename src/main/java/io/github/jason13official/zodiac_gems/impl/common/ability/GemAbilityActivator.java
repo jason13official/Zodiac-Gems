@@ -241,7 +241,7 @@ public class GemAbilityActivator {
         level.sendParticles(ParticleTypes.END_ROD, ex, ey, ez, 15, 0.4, 0.5, 0.4, 0.02);
         level.sendParticles(ParticleTypes.GLOW, ex, ey, ez, 10, 0.4, 0.4, 0.4, 0.0);
         level.playSound(null, ex, ey, ez, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, 1.2f);
-        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 200, 0));
+        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 20 * 3, 0));
         player.getCooldowns().addCooldown(ModItems.MOONSTONE, 20 * 6);
       }
 
@@ -276,6 +276,7 @@ public class GemAbilityActivator {
       }
 
       case PERIDOT_POISON_BLAST -> {
+        // TODO make it similar to amethst blast cause that's cooler
         if (player.getCooldowns().getCooldownPercent(ModItems.PERIDOT, 1.0f) > 0) {
           return;
         }
@@ -333,7 +334,7 @@ public class GemAbilityActivator {
         entity.setAttacking(true);
         entity.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
         level.addFreshEntity(entity);
-        player.getCooldowns().addCooldown(ModItems.TOURMALINE, 20 * 6);
+        player.getCooldowns().addCooldown(ModItems.TOURMALINE, 20 * 12);
       }
 
       case TOPAZ_WARP -> {
