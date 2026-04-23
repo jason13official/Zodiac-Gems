@@ -21,7 +21,7 @@ public enum GemType implements StringRepresentable {
   PERIDOT(7, "peridot", 0.50f, 0.85f, 0.10f, GemAbility.PERIDOT_POISON_BLAST),
   SAPPHIRE(8, "sapphire", 0.05f, 0.30f, 0.95f, GemAbility.SAPPHIRE_LIGHTNING),
   TOURMALINE(9, "tourmaline", 0.95f, 0.30f, 0.55f, GemAbility.TOURMALINE_BODY_DOUBLE, GemAbility.TOURMALINE_FIGHTING_MIMIC),
-  TOPAZ(10, "topaz", 1.00f, 0.75f, 0.05f, GemAbility.TOPAZ_WARP),
+  TOPAZ(10, "topaz", 1.00f, 0.75f, 0.05f, GemAbility.TOPAZ_WARP, GemAbility.TOPAZ_MIND_BEND),
   ZIRCON(11, "zircon", 0.85f, 0.95f, 1.00f, GemAbility.ZIRCON_FREEZE);
 
   public static final Codec<GemType> CODEC = StringRepresentable.fromEnum(GemType::values);

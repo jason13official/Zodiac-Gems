@@ -93,7 +93,8 @@ public class ZodiacGemItem extends Item {
       }
 
       case TOPAZ -> {
-        list.add(passive("Warp"));
+        list.add(passive("Potion Immunity"));
+        list.add(active("Warp (6s cooldown)"));
         list.add(active("Mind Bend (6s cooldown)"));
       }
 

@@ -23,11 +23,6 @@ public class DiamondVaultHandler {
       return;
     }
 
-    // TODO maybe always keep items, even if not holding GemType.DIAMOND
-    if (GemType.getHeldGem(player) != GemType.DIAMOND) {
-      return;
-    }
-
     AdditionalInventory aegis = () -> ((AdditionalInventory) player.getInventory()).zodiac$getItems();
     List<ItemStack> saved = new ArrayList<>();
     for (int i = 0; i < aegis.getContainerSize() && saved.size() < VAULT_SIZE; i++) {

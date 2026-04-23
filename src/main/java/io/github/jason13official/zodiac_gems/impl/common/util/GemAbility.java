@@ -41,6 +41,7 @@ public enum GemAbility {
 
   // Topaz
   TOPAZ_WARP,
+  TOPAZ_MIND_BEND,
 
   // Zircon
   ZIRCON_FREEZE,

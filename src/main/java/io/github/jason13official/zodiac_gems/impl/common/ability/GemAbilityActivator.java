@@ -1,6 +1,7 @@
 package io.github.jason13official.zodiac_gems.impl.common.ability;
 
 import io.github.jason13official.zodiac_gems.impl.common.entity.PlayerBodyDouble;
+import io.github.jason13official.zodiac_gems.impl.common.item.ZodiacGemItem;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -356,11 +358,36 @@ public class GemAbilityActivator {
         }
         HitResult hit = player.pick(50, 0, false);
         if (hit instanceof BlockHitResult blockHit) {
-          level.sendParticles(ParticleTypes.REVERSE_PORTAL, ex, ey, ez, 20, 0.3, 0.5, 0.3, 0.05);
+
+          // level.sendParticles(ParticleTypes.REVERSE_PORTAL, ex, ey, ez, 20, 0.3, 0.5, 0.3, 0.05);
+          Vec3 look = player.getLookAngle();
+          Vec3 eyePos = player.getEyePosition(1.0f).subtract(0, 0.5D, 0);
+          DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.87f, 0.46f, 0.0f), 1.2f);
+          level.sendParticles(dust, eyePos.x, eyePos.y, eyePos.z, 15, 0.2, 0.2, 0.2, 0.0);
+
           level.playSound(null, ex, ey, ez, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
           BlockPos pos = blockHit.getBlockPos().above();
           player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-          level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), 15, 0.3, 0.5, 0.3, 0.05);
+
+          // level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), 15, 0.3, 0.5, 0.3, 0.05);
+          look = player.getLookAngle();
+          eyePos = player.getEyePosition(1.0f).subtract(0, 0.5D, 0);
+          dust = new DustParticleOptions(new Vector3f(0.87f, 0.46f, 0.0f), 1.2f);
+          level.sendParticles(dust, player.getX(), player.getEyeY(), player.getZ(), 15, 0.2, 0.2, 0.2, 0.0);
+        }
+        player.getCooldowns().addCooldown(ModItems.TOPAZ, 20 * 6);
+      }
+
+      case TOPAZ_MIND_BEND -> {
+        if (player.getCooldowns().getCooldownPercent(ModItems.TOPAZ, 1.0f) > 0) {
+          return;
+        }
+        EntityHitResult entityHit = pickLivingEntity(player, 30.0);
+        if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+          level.sendParticles(ParticleTypes.SQUID_INK, ex, ey, ez, 15, 0.4, 0.4, 0.4, 0.05);
+          level.playSound(null, ex, ey, ez, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.0f, 1.0f);
+          Vec3 look = player.getLookAngle();
+          target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 20 * 6, 0, false, true));
         }
         player.getCooldowns().addCooldown(ModItems.TOPAZ, 20 * 6);
       }
@@ -380,6 +407,8 @@ public class GemAbilityActivator {
         player.getCooldowns().addCooldown(ModItems.ZIRCON, 20 * 30);
       }
     }
+
+    player.swing(player.getMainHandItem().getItem() instanceof ZodiacGemItem ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
   }
 
   private static EntityHitResult pickLivingEntity(ServerPlayer player, double range) {
