@@ -22,6 +22,8 @@ public class DiamondVaultHandler {
     if (!(event.getEntity() instanceof ServerPlayer player)) {
       return;
     }
+
+    // TODO maybe always keep items, even if not holding GemType.DIAMOND
     if (GemType.getHeldGem(player) != GemType.DIAMOND) {
       return;
     }

@@ -119,7 +119,7 @@ public class GemAbilityActivator {
             target.hurt(level.damageSources().playerAttack(player), 3.0f);
           }
         }
-        player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 6);
+        player.getCooldowns().addCooldown(ModItems.AMETHYST, 20 * 4);
       }
 
       case AQUAMARINE_WATERBEND -> {
@@ -276,7 +276,6 @@ public class GemAbilityActivator {
       }
 
       case PERIDOT_POISON_BLAST -> {
-        // TODO make it similar to amethst blast cause that's cooler
         if (player.getCooldowns().getCooldownPercent(ModItems.PERIDOT, 1.0f) > 0) {
           return;
         }

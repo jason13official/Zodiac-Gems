@@ -36,9 +36,12 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -94,6 +97,17 @@ public class ZodiacGems {
       if (event.getEntity() instanceof ServerPlayer player) {
         PlayerAbilityTracker.reset(player.getUUID());
         RubyFloatJumpTracker.remove(player.getUUID());
+        if (WaterbendTracker.isActive(player.getUUID())) {
+          WaterbendTracker.remove(player.getUUID());
+          for (ServerPlayer p : player.serverLevel().players()) {
+            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+          }
+        }
+      }
+    });
+
+    MinecraftForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) event -> {
+      if (event.getEntity() instanceof ServerPlayer player) {
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {

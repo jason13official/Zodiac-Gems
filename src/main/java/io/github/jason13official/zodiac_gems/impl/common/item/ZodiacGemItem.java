@@ -38,41 +38,43 @@ public class ZodiacGemItem extends Item {
 
       case GARNET -> {
         list.add(passive("Fire Resistance"));
-        list.add(active("Ghast Fireball (6s cooldown)"));
+        list.add(active("Fireball (6s cooldown)"));
       }
 
       case AMETHYST -> {
-        list.add(active("Targeted Darkness (8s cooldown)"));
+        list.add(active("Nightmare (8s cooldown)"));
         list.add(active("Amethyst Blast (6s cooldown)"));
       }
 
       case AQUAMARINE -> {
-        list.add(passive("Water Breathing + Dolphin's Grace"));
+        // list.add(passive("Water Breathing + Dolphin's Grace"));
+        list.add(passive("Neptune's Blessing"));
         list.add(active("Water Bending (6s cooldown)"));
       }
 
       case DIAMOND -> {
         list.add(passive("Aegis Vault"));
-        list.add(active("Turtle Master Potion (6s cooldown)"));
+        list.add(active("Diamond Skin (6s cooldown)"));
         list.add(active("Fast Tunneling (6s cooldown)"));
       }
 
       case EMERALD -> {
-        list.add(active("Ender Pearl (6s cooldown)"));
-        list.add(active("Spectral Arrow (6s cooldown)"));
+        list.add(active("Chaos Control (6s cooldown)"));
+        list.add(active("Chaos Spear (6s cooldown)"));
       }
 
       case MOONSTONE -> {
-        list.add(passive("Night Vision"));
-        list.add(passive("Nighttime Regeneration"));
-        list.add(passive("Mob Cloaking"));
-        list.add(active("Slow Falling Burst (6s cooldown)"));
+//        list.add(passive("Night Vision"));
+//        list.add(passive("Nighttime Regeneration"));
+//        list.add(passive("Mob Cloaking"));
+        list.add(passive("Ariem's Blessing"));
+        list.add(active("Cloudy Descent (6s cooldown)"));
       }
 
       case RUBY -> {
         list.add(passive("Controllable Levitation"));
-        list.add(active("Dragon's Breath (6s cooldown)"));
-        list.add(active("Shulker Bullet (6s cooldown)"));
+        list.add(active("Hurtful Illusion (6s cooldown)"));
+        list.add(active("Targeted Rise (6s cooldown)"));
       }
 
       case PERIDOT -> {
@@ -81,23 +83,23 @@ public class ZodiacGemItem extends Item {
       }
 
       case SAPPHIRE -> {
-        list.add(active("Lightning Strike(12s cooldown)"));
-        list.add(passive("Redstone Emittance"));
+        list.add(passive("Static"));
+        list.add(active("Lightning Strike (12s cooldown)"));
       }
 
       case TOURMALINE -> {
-        list.add(active("Idle Body Double (6s cooldown)"));
-        list.add(active("Fighting Body Double (12s cooldown)"));
+        list.add(active("Idle Twin (6s cooldown)"));
+        list.add(active("Double Trouble (12s cooldown)"));
       }
 
       case TOPAZ -> {
-        list.add(passive("Potion Immune"));
-        list.add(active("Ray Cast (6s cooldown)"));
+        list.add(passive("Warp"));
+        list.add(active("Mind Bend (6s cooldown)"));
       }
 
       case ZIRCON -> {
-        list.add(passive("Advanced Knee Replacements"));
-        list.add(active("Freeze! (30s cooldown)"));
+        list.add(passive("Gentle Landing"));
+        list.add(active("Telekinetic Hold (30s cooldown)"));
       }
     }
   }
