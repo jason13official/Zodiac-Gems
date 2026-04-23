@@ -8,6 +8,8 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -72,6 +74,15 @@ public class PlayerBodyDouble extends PathfinderMob {
     return p instanceof AbstractClientPlayer acp ? acp : null;
   }
 
+  public ServerPlayer getAttachedServerPlayer() {
+    Optional<UUID> uuid = this.entityData.get(DATA_OWNER_UUID);
+    if (uuid.isEmpty() || !(this.level() instanceof ServerLevel sl)) {
+      return null;
+    }
+    Player p = sl.getPlayerByUUID(uuid.get());
+    return p instanceof ServerPlayer sp ? sp : null;
+  }
+
   @Override
   protected void registerGoals() {
     this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0, false) {
@@ -87,7 +98,7 @@ public class PlayerBodyDouble extends PathfinderMob {
       public boolean canUse() {
 
         var target = this.target;
-        var owner = PlayerBodyDouble.this.getAttachedClientPlayer();
+        var owner = PlayerBodyDouble.this.getAttachedServerPlayer();
 
         if ((target != null && owner != null) && target.getUUID().equals(owner.getUUID())) {
           return false;

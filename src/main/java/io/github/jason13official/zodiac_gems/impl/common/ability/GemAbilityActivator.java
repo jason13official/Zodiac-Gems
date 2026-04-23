@@ -231,6 +231,18 @@ public class GemAbilityActivator {
           arrow.setCritArrow(true);
           level.addFreshEntity(arrow);
         }
+
+        // TODO align these with the arrow somehow? or new custom arrow that spawns these particles behind it?
+        Vec3 look = player.getLookAngle();
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        DustParticleOptions dust = new DustParticleOptions(new Vector3f(0.6f, 0.0f, 1.0f), 1.2f);
+        level.sendParticles(dust, eyePos.x, eyePos.y, eyePos.z, 15, 0.2, 0.2, 0.2, 0.0);
+        for (int step = 1; step <= 6; step++) {
+          Vec3 trailPos = eyePos.add(look.scale(step * 1.5));
+          level.sendParticles(dust, trailPos.x, trailPos.y, trailPos.z, 3, 0.15, 0.15, 0.15, 0.0);
+        }
+
+
         player.getCooldowns().addCooldown(ModItems.EMERALD, 20 * 6);
       }
 
@@ -238,10 +250,12 @@ public class GemAbilityActivator {
         if (player.getCooldowns().getCooldownPercent(ModItems.MOONSTONE, 1.0f) > 0) {
           return;
         }
+
+        // TODO maybe do a tracker to keep sending these particles until no slow falling/five seconds pass?
         level.sendParticles(ParticleTypes.END_ROD, ex, ey, ez, 15, 0.4, 0.5, 0.4, 0.02);
         level.sendParticles(ParticleTypes.GLOW, ex, ey, ez, 10, 0.4, 0.4, 0.4, 0.0);
         level.playSound(null, ex, ey, ez, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, 1.2f);
-        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 20 * 3, 0));
+        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 20 * 5, 0));
         player.getCooldowns().addCooldown(ModItems.MOONSTONE, 20 * 6);
       }
 
