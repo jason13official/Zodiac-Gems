@@ -1,5 +1,6 @@
 package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.MoonstoneSlowFallTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatJumpTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.SapphireSignalTracker;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
@@ -82,6 +83,19 @@ public class LivingUpdateEventHandler {
         player.removeEffect(MobEffects.SLOW_FALLING);
         var gravity = player.getAttribute(Attributes.GRAVITY);
         if (gravity != null) gravity.setBaseValue(0.08);
+      }
+    }
+
+    if (MoonstoneSlowFallTracker.contains(player.getUUID())) {
+      if (player.hasEffect(MobEffects.SLOW_FALLING)) {
+        if (level.getGameTime() % 4 == 0) {
+          ((ServerLevel) level).sendParticles(ParticleTypes.END_ROD,
+              player.getX(), player.getY() + 1.0, player.getZ(), 5, 0.3, 0.5, 0.3, 0.01);
+          ((ServerLevel) level).sendParticles(ParticleTypes.GLOW,
+              player.getX(), player.getY() + 1.0, player.getZ(), 3, 0.3, 0.3, 0.3, 0.0);
+        }
+      } else {
+        MoonstoneSlowFallTracker.remove(player.getUUID());
       }
     }
 

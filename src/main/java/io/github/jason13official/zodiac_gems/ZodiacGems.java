@@ -1,6 +1,8 @@
 package io.github.jason13official.zodiac_gems;
 
+import io.github.jason13official.zodiac_gems.impl.common.ability.ChaosSpearTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.InvisibilityTracker;
+import io.github.jason13official.zodiac_gems.impl.common.ability.MoonstoneSlowFallTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.NametagTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatJumpTracker;
@@ -38,6 +40,7 @@ import java.util.UUID;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
@@ -83,6 +86,11 @@ public class ZodiacGems {
     MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerClone);
     MinecraftForge.EVENT_BUS.addListener(ZodiacCommands::register);
 
+    MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.LevelTickEvent>) event -> {
+      if (event.phase != TickEvent.Phase.END || event.level.isClientSide() || !(event.level instanceof ServerLevel serverLevel)) return;
+      ChaosSpearTracker.tick(serverLevel);
+    });
+
     MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) event -> {
       if (!(event.getEntity() instanceof ServerPlayer player)) return;
       for (Map.Entry<UUID, UUID> entry : InvisibilityTracker.getAll().entrySet()) {
@@ -97,6 +105,7 @@ public class ZodiacGems {
       if (event.getEntity() instanceof ServerPlayer player) {
         PlayerAbilityTracker.reset(player.getUUID());
         RubyFloatJumpTracker.remove(player.getUUID());
+        MoonstoneSlowFallTracker.remove(player.getUUID());
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {
@@ -108,6 +117,7 @@ public class ZodiacGems {
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {
+        MoonstoneSlowFallTracker.remove(player.getUUID());
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {
