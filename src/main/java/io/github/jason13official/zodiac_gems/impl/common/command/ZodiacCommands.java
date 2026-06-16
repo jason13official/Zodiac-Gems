@@ -10,8 +10,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ZodiacCommands {
 
@@ -28,7 +28,8 @@ public class ZodiacCommands {
                   InvisibilityTracker.hide(hidden.getUUID(), canSee.getUUID());
                   SyncInvisibilityS2CPacket packet = new SyncInvisibilityS2CPacket(hidden.getUUID(), true, canSee.getUUID());
                   for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
-                    ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                    // ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                    PacketDistributor.sendToPlayer(p, packet);
                   }
                   ctx.getSource().sendSuccess(() -> Component.literal(
                       hidden.getName().getString() + " is now hidden from everyone except " + canSee.getName().getString()), true);
@@ -43,7 +44,8 @@ public class ZodiacCommands {
               InvisibilityTracker.unhide(player.getUUID());
               SyncInvisibilityS2CPacket packet = new SyncInvisibilityS2CPacket(player.getUUID(), false, null);
               for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
-                ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                // ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                PacketDistributor.sendToPlayer(p, packet);
               }
               ctx.getSource().sendSuccess(() -> Component.literal(
                   player.getName().getString() + " is now visible to everyone."), true);
@@ -58,7 +60,8 @@ public class ZodiacCommands {
               NametagTracker.hide(player.getUUID());
               SyncNametagS2CPacket packet = new SyncNametagS2CPacket(player.getUUID(), true);
               for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
-                ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                // ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                PacketDistributor.sendToPlayer(p, packet);
               }
               ctx.getSource().sendSuccess(() -> Component.literal(
                   player.getName().getString() + "'s nametag is now hidden."), true);
@@ -73,7 +76,8 @@ public class ZodiacCommands {
               NametagTracker.show(player.getUUID());
               SyncNametagS2CPacket packet = new SyncNametagS2CPacket(player.getUUID(), false);
               for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
-                ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                // ZodiacNetwork.INSTANCE.send(packet, PacketDistributor.PLAYER.with(p));
+                PacketDistributor.sendToPlayer(p, packet);
               }
               ctx.getSource().sendSuccess(() -> Component.literal(
                   player.getName().getString() + "'s nametag is now visible."), true);

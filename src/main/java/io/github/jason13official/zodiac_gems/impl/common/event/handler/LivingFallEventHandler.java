@@ -2,7 +2,7 @@ package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
 public class LivingFallEventHandler {
 

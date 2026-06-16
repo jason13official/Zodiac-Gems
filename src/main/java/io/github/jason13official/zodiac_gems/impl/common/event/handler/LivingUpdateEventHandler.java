@@ -17,16 +17,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class LivingUpdateEventHandler {
 
   private static final int DURATION_TICKS = 10;
 
-  public static void onLivingUpdate(LivingTickEvent event) {
+  public static void onLivingUpdate(EntityTickEvent event) {
 
-    LivingEntity entity = event.getEntity();
+    if (!(event.getEntity() instanceof LivingEntity entity)) {
+      return;
+    }
+
+    // LivingEntity entity = event.getEntity();
     Level level = entity.level();
 
     if (level.getGameTime() % 2 != 0) {
@@ -40,7 +45,8 @@ public class LivingUpdateEventHandler {
     // between effect applied and effect removed/expired.
     if (level.getGameTime() % (20 * 5) == 0 && entity.hasEffect(MobEffects.DARKNESS)) {
       for (ServerPlayer player : ((ServerLevel) level).players()) {
-        ZodiacNetwork.INSTANCE.send(new ToggleDarknessS2CPacket(event.getEntity().getUUID(), true), PacketDistributor.PLAYER.with(player));
+        // ZodiacNetwork.INSTANCE.send(new ToggleDarknessS2CPacket(event.getEntity().getUUID(), true), PacketDistributor.PLAYER.with(player));
+        PacketDistributor.sendToPlayer(player, new ToggleDarknessS2CPacket(event.getEntity().getUUID(), true));
       }
     }
 

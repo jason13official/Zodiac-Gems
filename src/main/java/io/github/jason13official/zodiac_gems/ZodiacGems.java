@@ -155,7 +155,7 @@ public class ZodiacGems {
 
       if (event.getEffectInstance().is(MobEffects.DARKNESS)) {
         for (ServerPlayer player : ((ServerLevel) event.getEntity().level()).players()) {
-          ZodiacNetwork.INSTANCE.send(new ToggleDarknessS2CPacket(event.getEntity().getUUID(), true), PacketDistributor.PLAYER.with(player));
+          PacketDistributor.sendToPlayer(player, new ToggleDarknessS2CPacket(event.getEntity().getUUID(), true));
         }
       }
     });
@@ -168,7 +168,7 @@ public class ZodiacGems {
 
       if (event.getEffectInstance() != null && event.getEffectInstance().is(MobEffects.DARKNESS)) {
         for (ServerPlayer player : ((ServerLevel) event.getEntity().level()).players()) {
-          ZodiacNetwork.INSTANCE.send(new ToggleDarknessS2CPacket(event.getEntity().getUUID(), false), PacketDistributor.PLAYER.with(player));
+          PacketDistributor.sendToPlayer(player, new ToggleDarknessS2CPacket(event.getEntity().getUUID(), false));
         }
       }
     });
@@ -181,7 +181,7 @@ public class ZodiacGems {
 
       if (event.getEffectInstance() != null && event.getEffectInstance().is(MobEffects.DARKNESS)) {
         for (ServerPlayer player : ((ServerLevel) event.getEntity().level()).players()) {
-          ZodiacNetwork.INSTANCE.send(new ToggleDarknessS2CPacket(event.getEntity().getUUID(), false), PacketDistributor.PLAYER.with(player));
+          PacketDistributor.sendToPlayer(player, new ToggleDarknessS2CPacket(event.getEntity().getUUID(), false));
         }
       }
     });

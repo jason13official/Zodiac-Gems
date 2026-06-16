@@ -39,7 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
 public class GemAbilityActivator {
@@ -152,7 +152,8 @@ public class GemAbilityActivator {
           }
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : level.players()) {
-            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            // ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            PacketDistributor.sendToPlayer(p, new ToggleWaterbendS2CPacket(player.getUUID(), false));
           }
           level.sendParticles(ParticleTypes.SPLASH, ex, ey, ez, 20, 0.4, 0.3, 0.4, 0.1);
           level.sendParticles(ParticleTypes.DRIPPING_WATER, ex, ey, ez, 10, 0.4, 0.3, 0.4, 0.0);
@@ -166,7 +167,8 @@ public class GemAbilityActivator {
               level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
               WaterbendTracker.setActive(player.getUUID());
               for (ServerPlayer p : level.players()) {
-                ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), true), PacketDistributor.PLAYER.with(p));
+                // ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), true), PacketDistributor.PLAYER.with(p));
+                PacketDistributor.sendToPlayer(p, new ToggleWaterbendS2CPacket(player.getUUID(), true));
               }
               level.sendParticles(ParticleTypes.DRIPPING_WATER, ex, ey, ez, 10, 0.3, 0.3, 0.3, 0.0);
               level.playSound(null, ex, ey, ez, SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0f, 1.2f);

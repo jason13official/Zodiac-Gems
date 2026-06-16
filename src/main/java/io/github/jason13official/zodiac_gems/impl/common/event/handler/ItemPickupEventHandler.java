@@ -8,20 +8,21 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import org.joml.Vector3f;
 
 public class ItemPickupEventHandler {
 
-  public static void onItemPickup(EntityItemPickupEvent event) {
-    if (!(event.getEntity() instanceof ServerPlayer player)) {
+  public static void onItemPickup(ItemEntityPickupEvent event) {
+
+    if (!(event.getPlayer() instanceof ServerPlayer player)) {
       return;
     }
     if (!(player.level() instanceof ServerLevel level)) {
       return;
     }
 
-    ItemStack stack = event.getItem().getItem();
+    ItemStack stack = event.getItemEntity().getItem();
 
     if (!(stack.getItem() instanceof ZodiacGemItem gem)) {
       return;
