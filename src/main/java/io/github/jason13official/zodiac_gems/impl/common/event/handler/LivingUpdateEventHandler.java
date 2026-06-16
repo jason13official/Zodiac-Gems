@@ -25,7 +25,7 @@ public class LivingUpdateEventHandler {
 
   private static final int DURATION_TICKS = 10;
 
-  public static void onLivingUpdate(EntityTickEvent event) {
+  public static void onLivingUpdate(EntityTickEvent.Post event) {
 
     if (!(event.getEntity() instanceof LivingEntity entity)) {
       return;

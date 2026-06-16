@@ -13,7 +13,7 @@ import org.joml.Vector3f;
 
 public class ItemPickupEventHandler {
 
-  public static void onItemPickup(ItemEntityPickupEvent event) {
+  public static void onItemPickup(ItemEntityPickupEvent.Post event) {
 
     if (!(event.getPlayer() instanceof ServerPlayer player)) {
       return;
