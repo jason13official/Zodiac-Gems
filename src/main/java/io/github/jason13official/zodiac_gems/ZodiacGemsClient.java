@@ -24,15 +24,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 public class ZodiacGemsClient {
@@ -55,7 +54,7 @@ public class ZodiacGemsClient {
     modEventBus.addListener(this::registerEntityRenderers);
     modEventBus.addListener(this::registerEntityLayers);
 
-    MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
+    NeoForge.EVENT_BUS.addListener(this::onClientTick);
   }
 
   public void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -71,10 +70,7 @@ public class ZodiacGemsClient {
     event.registerLayerDefinition(PlayerBodyDoubleRenderer.LAYER_LOCATION, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
   }
 
-  public void onClientTick(ClientTickEvent event) {
-    if (event.phase != Phase.END) {
-      return;
-    }
+  public void onClientTick(ClientTickEvent.Post event) {
 
 //    if (Minecraft.getInstance().level instanceof ClientLevel level && level.getGameTime() % 20 == 0) {
 //      Constants.LOG.info(DARKNESS_TRACKER.toString());

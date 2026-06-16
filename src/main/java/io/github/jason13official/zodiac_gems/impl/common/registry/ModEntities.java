@@ -18,9 +18,9 @@ public class ModEntities {
         .sized(0.6F, 1.8F)
         .eyeHeight(1.62F)
         .clientTrackingRange(32)
-        .updateInterval(2).build(ZodiacGems.identifier("body_double").toString());
+        .updateInterval(2).build(ZodiacGems.id("body_double").toString());
 
-    consumer.accept(BODY_DOUBLE, ZodiacGems.identifier("body_double"));
+    consumer.accept(BODY_DOUBLE, ZodiacGems.id("body_double"));
   }
 
 }

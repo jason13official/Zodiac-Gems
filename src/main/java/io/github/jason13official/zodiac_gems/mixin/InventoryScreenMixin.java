@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InventoryScreenMixin extends EffectRenderingInventoryScreen<InventoryMenu> implements RecipeUpdateListener {
 
   @Unique
-  private static final ResourceLocation ZODIAC$INVENTORY_LOCATION = ZodiacGems.identifier("zodiac/additional_slots");
+  private static final ResourceLocation ZODIAC$INVENTORY_LOCATION = ZodiacGems.id("zodiac/additional_slots");
 
   /// dummy
   public InventoryScreenMixin(InventoryMenu pMenu, Inventory pPlayerInventory, Component pTitle) {

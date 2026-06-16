@@ -1,12 +1,21 @@
 package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
+import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.ZodiacGemsClient;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class SyncInvisibilityS2CPacket {
+public class SyncInvisibilityS2CPacket implements CustomPacketPayload {
+
+  public static final CustomPacketPayload.Type<SyncInvisibilityS2CPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("sync_invisibility"));
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
   private final UUID hiddenPlayer;
   private final boolean hidden;

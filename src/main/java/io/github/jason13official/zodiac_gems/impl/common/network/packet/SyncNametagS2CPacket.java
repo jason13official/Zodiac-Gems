@@ -1,11 +1,20 @@
 package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
+import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.ZodiacGemsClient;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class SyncNametagS2CPacket {
+public class SyncNametagS2CPacket implements CustomPacketPayload {
+
+  public static final CustomPacketPayload.Type<SyncNametagS2CPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("sync_nametag"));
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
   private final UUID player;
   private final boolean hidden;

@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PlayerBodyDoubleRenderer extends HumanoidMobRenderer<PlayerBodyDouble, PlayerBodyDoubleModel> {
 
-  public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ZodiacGems.identifier("body_double"), "main");
+  public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ZodiacGems.id("body_double"), "main");
 
   private static final ResourceLocation STEVE =
       ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/player/wide/steve.png");

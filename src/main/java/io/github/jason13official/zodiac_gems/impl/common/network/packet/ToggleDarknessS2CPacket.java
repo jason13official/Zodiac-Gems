@@ -1,12 +1,21 @@
 package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
 import io.github.jason13official.zodiac_gems.Constants;
+import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.ZodiacGemsClient;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class ToggleDarknessS2CPacket {
+public class ToggleDarknessS2CPacket implements CustomPacketPayload {
+
+  public static final CustomPacketPayload.Type<ToggleDarknessS2CPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("toggle_darkness"));
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
   private final UUID uuid;
   private final boolean darkness;

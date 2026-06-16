@@ -14,6 +14,7 @@ import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingCha
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.RubyFloatJumpC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncInvisibilityS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncNametagS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
@@ -32,26 +33,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(Constants.MOD_ID)
 public class ZodiacGems {
@@ -59,7 +57,7 @@ public class ZodiacGems {
   public static IEventBus EVENT_BUS;
   public static boolean travelersBackpackInstalled = false;
 
-  public ZodiacGems(FMLJavaModLoadingContext context) {
+  public ZodiacGems(IEventBus modEventBus) {
 
     if (FMLLoader.getLoadingModList().getModFileById("travelersbackpack") != null) {
       Constants.LOG.info("travelersbackpack mod ID loaded.");
@@ -68,30 +66,34 @@ public class ZodiacGems {
 
     Constants.LOG.info("ZodiacGems Common.");
 
-    EVENT_BUS = context.getModEventBus();
+    EVENT_BUS = modEventBus;
 
     bind(Registries.ENTITY_TYPE, ModEntities::register);
     bind(Registries.ITEM, ModItems::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
 
-    EVENT_BUS.addListener((Consumer<FMLCommonSetupEvent>) event -> {
+    EVENT_BUS.addListener((Consumer<RegisterPayloadHandlersEvent>) event -> {
       ZodiacNetwork.init();
+
+      final PayloadRegistrar registrar = event.registrar("1");
+
+      registrar.playToServer(RubyFloatJumpC2SPacket.TYPE, RubyFloatJumpC2SPacket.STREAM_CODEC, RubyFloatJumpC2SPacket::handleOnServer);
     });
 
-    MinecraftForge.EVENT_BUS.addListener(ItemPickupEventHandler::onItemPickup);
-    MinecraftForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
-    MinecraftForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
-    MinecraftForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
-    MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerDeath);
-    MinecraftForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerClone);
-    MinecraftForge.EVENT_BUS.addListener(ZodiacCommands::register);
+    NeoForge.EVENT_BUS.addListener(ItemPickupEventHandler::onItemPickup);
+    NeoForge.EVENT_BUS.addListener(LivingUpdateEventHandler::onLivingUpdate);
+    NeoForge.EVENT_BUS.addListener(LivingFallEventHandler::onLivingFall);
+    NeoForge.EVENT_BUS.addListener(LivingChangeTargetEventHandler::onLivingChangeTarget);
+    NeoForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerDeath);
+    NeoForge.EVENT_BUS.addListener(DiamondVaultHandler::onPlayerClone);
+    NeoForge.EVENT_BUS.addListener(ZodiacCommands::register);
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.LevelTickEvent>) event -> {
-      if (event.phase != TickEvent.Phase.END || event.level.isClientSide() || !(event.level instanceof ServerLevel serverLevel)) return;
+    NeoForge.EVENT_BUS.addListener((Consumer<LevelTickEvent.Post>) event -> {
+      if (event.getLevel().isClientSide() || !(event.getLevel() instanceof ServerLevel serverLevel)) return;
       ChaosSpearTracker.tick(serverLevel);
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) event -> {
       if (!(event.getEntity() instanceof ServerPlayer player)) return;
       for (Map.Entry<UUID, UUID> entry : InvisibilityTracker.getAll().entrySet()) {
         ZodiacNetwork.INSTANCE.send(new SyncInvisibilityS2CPacket(entry.getKey(), true, entry.getValue()), PacketDistributor.PLAYER.with(player));
@@ -101,7 +103,7 @@ public class ZodiacGems {
       }
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<EntityLeaveLevelEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {
         PlayerAbilityTracker.reset(player.getUUID());
         RubyFloatJumpTracker.remove(player.getUUID());
@@ -115,7 +117,7 @@ public class ZodiacGems {
       }
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<LivingDeathEvent>) event -> {
       if (event.getEntity() instanceof ServerPlayer player) {
         MoonstoneSlowFallTracker.remove(player.getUUID());
         if (WaterbendTracker.isActive(player.getUUID())) {
@@ -135,7 +137,7 @@ public class ZodiacGems {
               .build());
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Added>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Added>) event -> {
 
       if (event.getEntity().level().isClientSide()) {
         return;
@@ -148,7 +150,7 @@ public class ZodiacGems {
       }
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Remove>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Remove>) event -> {
 
       if (event.getEntity().level().isClientSide()) {
         return;
@@ -161,7 +163,7 @@ public class ZodiacGems {
       }
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Expired>) event -> {
+    NeoForge.EVENT_BUS.addListener((Consumer<MobEffectEvent.Expired>) event -> {
 
       if (event.getEntity().level().isClientSide()) {
         return;
@@ -179,13 +181,7 @@ public class ZodiacGems {
     }
   }
 
-  @Deprecated
-  @SuppressWarnings("all")
-  public ZodiacGems() {
-    this(FMLJavaModLoadingContext.get());
-  }
-
-  public static ResourceLocation identifier(String path) {
+  public static ResourceLocation id(String path) {
     return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
   }
 

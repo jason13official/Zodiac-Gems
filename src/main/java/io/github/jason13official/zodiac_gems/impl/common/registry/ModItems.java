@@ -79,25 +79,25 @@ public class ModItems {
     TOPAZ = new ZodiacGemItem(GemType.TOPAZ, new Properties().stacksTo(1));
     ZIRCON = new ZodiacGemItem(GemType.ZIRCON, new Properties().stacksTo(1));
 
-    consumer.accept(GARNET, ZodiacGems.identifier("garnet"));
-    consumer.accept(AMETHYST, ZodiacGems.identifier("amethyst"));
-    consumer.accept(AQUAMARINE, ZodiacGems.identifier("aquamarine"));
-    consumer.accept(DIAMOND, ZodiacGems.identifier("diamond"));
+    consumer.accept(GARNET, ZodiacGems.id("garnet"));
+    consumer.accept(AMETHYST, ZodiacGems.id("amethyst"));
+    consumer.accept(AQUAMARINE, ZodiacGems.id("aquamarine"));
+    consumer.accept(DIAMOND, ZodiacGems.id("diamond"));
 
-    consumer.accept(EMERALD, ZodiacGems.identifier("emerald"));
-    consumer.accept(YELLOW_EMERALD, ZodiacGems.identifier("yellow_emerald"));
-    consumer.accept(WHITE_EMERALD, ZodiacGems.identifier("white_emerald"));
-    consumer.accept(PURPLE_EMERALD, ZodiacGems.identifier("purple_emerald"));
-    consumer.accept(CYAN_EMERALD, ZodiacGems.identifier("cyan_emerald"));
-    consumer.accept(RED_EMERALD, ZodiacGems.identifier("red_emerald"));
-    consumer.accept(BLUE_EMERALD, ZodiacGems.identifier("blue_emerald"));
+    consumer.accept(EMERALD, ZodiacGems.id("emerald"));
+    consumer.accept(YELLOW_EMERALD, ZodiacGems.id("yellow_emerald"));
+    consumer.accept(WHITE_EMERALD, ZodiacGems.id("white_emerald"));
+    consumer.accept(PURPLE_EMERALD, ZodiacGems.id("purple_emerald"));
+    consumer.accept(CYAN_EMERALD, ZodiacGems.id("cyan_emerald"));
+    consumer.accept(RED_EMERALD, ZodiacGems.id("red_emerald"));
+    consumer.accept(BLUE_EMERALD, ZodiacGems.id("blue_emerald"));
 
-    consumer.accept(MOONSTONE, ZodiacGems.identifier("moonstone"));
-    consumer.accept(RUBY, ZodiacGems.identifier("ruby"));
-    consumer.accept(PERIDOT, ZodiacGems.identifier("peridot"));
-    consumer.accept(SAPPHIRE, ZodiacGems.identifier("sapphire"));
-    consumer.accept(TOURMALINE, ZodiacGems.identifier("tourmaline"));
-    consumer.accept(TOPAZ, ZodiacGems.identifier("topaz"));
-    consumer.accept(ZIRCON, ZodiacGems.identifier("zircon"));
+    consumer.accept(MOONSTONE, ZodiacGems.id("moonstone"));
+    consumer.accept(RUBY, ZodiacGems.id("ruby"));
+    consumer.accept(PERIDOT, ZodiacGems.id("peridot"));
+    consumer.accept(SAPPHIRE, ZodiacGems.id("sapphire"));
+    consumer.accept(TOURMALINE, ZodiacGems.id("tourmaline"));
+    consumer.accept(TOPAZ, ZodiacGems.id("topaz"));
+    consumer.accept(ZIRCON, ZodiacGems.id("zircon"));
   }
 }

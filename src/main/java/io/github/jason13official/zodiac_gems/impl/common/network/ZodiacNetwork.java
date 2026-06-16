@@ -18,7 +18,7 @@ public class ZodiacNetwork {
 
   /// called during FMLCommonSetupEvent in [ZodiacGems]
   public static void init() {
-    INSTANCE = ChannelBuilder.named(ZodiacGems.identifier("network")).networkProtocolVersion(1).clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
+    INSTANCE = ChannelBuilder.named(ZodiacGems.id("network")).networkProtocolVersion(1).clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
 
     INSTANCE.messageBuilder(UseAbilityC2SPacket.class).encoder(UseAbilityC2SPacket::encode).decoder(UseAbilityC2SPacket::new).consumerMainThread(UseAbilityC2SPacket::handle).add();
     INSTANCE.messageBuilder(ToggleAbilityC2SPacket.class).encoder(ToggleAbilityC2SPacket::encode).decoder(ToggleAbilityC2SPacket::new).consumerMainThread(ToggleAbilityC2SPacket::handle).add();

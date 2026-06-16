@@ -1,13 +1,22 @@
 package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
 import io.github.jason13official.zodiac_gems.Constants;
+import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.impl.common.ability.PlayerAbilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class ToggleAbilityC2SPacket {
+public class ToggleAbilityC2SPacket implements CustomPacketPayload {
+
+  public static final CustomPacketPayload.Type<ToggleAbilityC2SPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("toggle_ability"));
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
   public ToggleAbilityC2SPacket() {
   }

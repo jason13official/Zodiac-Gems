@@ -43,6 +43,6 @@ public class ModTabs {
         })
         .build();
 
-    consumer.accept(ZODIAC_GEMS, ZodiacGems.identifier(Constants.MOD_ID));
+    consumer.accept(ZODIAC_GEMS, ZodiacGems.id(Constants.MOD_ID));
   }
 }
