@@ -13,12 +13,13 @@ import io.github.jason13official.zodiac_gems.impl.common.event.handler.ItemPicku
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingChangeTargetEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingFallEventHandler;
 import io.github.jason13official.zodiac_gems.impl.common.event.handler.LivingUpdateEventHandler;
-import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.RubyFloatJumpC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncInvisibilityS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncNametagS2CPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleWaterbendS2CPacket;
+import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModEntities;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModItems;
 import io.github.jason13official.zodiac_gems.impl.common.registry.ModTabs;
@@ -73,12 +74,16 @@ public class ZodiacGems {
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
 
     EVENT_BUS.addListener((Consumer<RegisterPayloadHandlersEvent>) event -> {
-      ZodiacNetwork.init();
 
       final PayloadRegistrar registrar = event.registrar("1");
 
       registrar.playToServer(RubyFloatJumpC2SPacket.TYPE, RubyFloatJumpC2SPacket.STREAM_CODEC, RubyFloatJumpC2SPacket::handleOnServer);
+      registrar.playToServer(ToggleAbilityC2SPacket.TYPE, ToggleAbilityC2SPacket.STREAM_CODEC, ToggleAbilityC2SPacket::handleOnServer);
+      registrar.playToServer(UseAbilityC2SPacket.TYPE, UseAbilityC2SPacket.STREAM_CODEC, UseAbilityC2SPacket::handleOnServer);
       registrar.playToClient(SyncInvisibilityS2CPacket.TYPE, SyncInvisibilityS2CPacket.STREAM_CODEC, SyncInvisibilityS2CPacket::handleOnClient);
+      registrar.playToClient(SyncNametagS2CPacket.TYPE, SyncNametagS2CPacket.STREAM_CODEC, SyncNametagS2CPacket::handleOnClient);
+      registrar.playToClient(ToggleDarknessS2CPacket.TYPE, ToggleDarknessS2CPacket.STREAM_CODEC, ToggleDarknessS2CPacket::handleOnClient);
+      registrar.playToClient(ToggleWaterbendS2CPacket.TYPE, ToggleWaterbendS2CPacket.STREAM_CODEC, ToggleWaterbendS2CPacket::handleOnClient);
     });
 
     NeoForge.EVENT_BUS.addListener(ItemPickupEventHandler::onItemPickup);
@@ -97,10 +102,12 @@ public class ZodiacGems {
     NeoForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) event -> {
       if (!(event.getEntity() instanceof ServerPlayer player)) return;
       for (Map.Entry<UUID, UUID> entry : InvisibilityTracker.getAll().entrySet()) {
-        ZodiacNetwork.INSTANCE.send(new SyncInvisibilityS2CPacket(entry.getKey(), true, entry.getValue()), PacketDistributor.PLAYER.with(player));
+        // ZodiacNetwork.INSTANCE.send(new SyncInvisibilityS2CPacket(entry.getKey(), true, entry.getValue()), PacketDistributor.PLAYER.with(player));
+        PacketDistributor.sendToPlayer(player, new SyncInvisibilityS2CPacket(entry.getKey(), true, entry.getValue()));
       }
       for (UUID uuid : NametagTracker.getAll()) {
-        ZodiacNetwork.INSTANCE.send(new SyncNametagS2CPacket(uuid, true), PacketDistributor.PLAYER.with(player));
+        // ZodiacNetwork.INSTANCE.send(new SyncNametagS2CPacket(uuid, true), PacketDistributor.PLAYER.with(player));
+        PacketDistributor.sendToPlayer(player, new SyncNametagS2CPacket(uuid, true));
       }
     });
 
@@ -112,7 +119,8 @@ public class ZodiacGems {
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {
-            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            // ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            PacketDistributor.sendToPlayer(p, new ToggleWaterbendS2CPacket(player.getUUID(), false));
           }
         }
       }
@@ -124,7 +132,8 @@ public class ZodiacGems {
         if (WaterbendTracker.isActive(player.getUUID())) {
           WaterbendTracker.remove(player.getUUID());
           for (ServerPlayer p : player.serverLevel().players()) {
-            ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            // ZodiacNetwork.INSTANCE.send(new ToggleWaterbendS2CPacket(player.getUUID(), false), PacketDistributor.PLAYER.with(p));
+            PacketDistributor.sendToPlayer(p, new ToggleWaterbendS2CPacket(player.getUUID(), false));
           }
         }
       }

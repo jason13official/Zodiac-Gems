@@ -3,7 +3,6 @@ package io.github.jason13official.zodiac_gems.impl.common.event.handler;
 import io.github.jason13official.zodiac_gems.impl.common.ability.MoonstoneSlowFallTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.RubyFloatJumpTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.SapphireSignalTracker;
-import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleDarknessS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.util.GemType;
 import net.minecraft.core.Holder;

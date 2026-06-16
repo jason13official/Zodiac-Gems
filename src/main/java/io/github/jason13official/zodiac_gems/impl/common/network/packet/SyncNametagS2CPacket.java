@@ -2,46 +2,38 @@ package io.github.jason13official.zodiac_gems.impl.common.network.packet;
 
 import io.github.jason13official.zodiac_gems.ZodiacGems;
 import io.github.jason13official.zodiac_gems.ZodiacGemsClient;
+import io.netty.buffer.ByteBuf;
 import java.util.UUID;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class SyncNametagS2CPacket implements CustomPacketPayload {
+public record SyncNametagS2CPacket(UUID player, boolean hidden) implements CustomPacketPayload {
 
   public static final CustomPacketPayload.Type<SyncNametagS2CPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("sync_nametag"));
+
+  public static final StreamCodec<ByteBuf, SyncNametagS2CPacket> STREAM_CODEC = StreamCodec.composite(
+      UUIDUtil.STREAM_CODEC,
+      SyncNametagS2CPacket::player,
+      ByteBufCodecs.BOOL,
+      SyncNametagS2CPacket::hidden,
+      SyncNametagS2CPacket::new
+  );
 
   @Override
   public Type<? extends CustomPacketPayload> type() {
     return TYPE;
   }
 
-  private final UUID player;
-  private final boolean hidden;
-
-  public SyncNametagS2CPacket(UUID player, boolean hidden) {
-    this.player = player;
-    this.hidden = hidden;
-  }
-
-  public SyncNametagS2CPacket(FriendlyByteBuf data) {
-    this.player = data.readUUID();
-    this.hidden = data.readBoolean();
-  }
-
-  public void encode(FriendlyByteBuf data) {
-    data.writeUUID(player);
-    data.writeBoolean(hidden);
-  }
-
-  public static void handle(SyncNametagS2CPacket packet, CustomPayloadEvent.Context context) {
+  public void handleOnClient(IPayloadContext context) {
     context.enqueueWork(() -> {
-      if (packet.hidden) {
-        ZodiacGemsClient.HIDDEN_NAMETAGS.add(packet.player);
+      if (this.hidden()) {
+        ZodiacGemsClient.HIDDEN_NAMETAGS.add(this.player());
       } else {
-        ZodiacGemsClient.HIDDEN_NAMETAGS.remove(packet.player);
+        ZodiacGemsClient.HIDDEN_NAMETAGS.remove(this.player());
       }
     });
-    context.setPacketHandled(true);
   }
 }

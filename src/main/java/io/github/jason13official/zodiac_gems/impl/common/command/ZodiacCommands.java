@@ -3,7 +3,6 @@ package io.github.jason13official.zodiac_gems.impl.common.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.jason13official.zodiac_gems.impl.common.ability.InvisibilityTracker;
 import io.github.jason13official.zodiac_gems.impl.common.ability.NametagTracker;
-import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncInvisibilityS2CPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.SyncNametagS2CPacket;
 import net.minecraft.commands.CommandSourceStack;

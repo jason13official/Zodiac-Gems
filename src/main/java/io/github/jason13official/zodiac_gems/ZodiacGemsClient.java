@@ -2,7 +2,6 @@ package io.github.jason13official.zodiac_gems;
 
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.jason13official.zodiac_gems.impl.client.renderer.PlayerBodyDoubleRenderer;
-import io.github.jason13official.zodiac_gems.impl.common.network.ZodiacNetwork;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.RubyFloatJumpC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.ToggleAbilityC2SPacket;
 import io.github.jason13official.zodiac_gems.impl.common.network.packet.UseAbilityC2SPacket;
@@ -97,11 +96,13 @@ public class ZodiacGemsClient {
       boolean jumpDown = mc2.player.input.jumping;
       if (jumpDown != rubyJumpKeyWasDown) {
         rubyJumpKeyWasDown = jumpDown;
-        ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(jumpDown), PacketDistributor.SERVER.noArg());
+        // ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(jumpDown), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new RubyFloatJumpC2SPacket(jumpDown));
       }
     } else if (rubyJumpKeyWasDown) {
       rubyJumpKeyWasDown = false;
-      ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(false), PacketDistributor.SERVER.noArg());
+      // ZodiacNetwork.INSTANCE.send(new RubyFloatJumpC2SPacket(false), PacketDistributor.SERVER.noArg());
+      PacketDistributor.sendToServer(new RubyFloatJumpC2SPacket(false));
     }
 
     while (USE_ABILITY.get().consumeClick()) {
@@ -113,7 +114,8 @@ public class ZodiacGemsClient {
       }
       GemType gemType = GemType.getHeldGem(mc.player);
       if (gemType != null) {
-        ZodiacNetwork.INSTANCE.send(new UseAbilityC2SPacket(gemType), PacketDistributor.SERVER.noArg());
+        // ZodiacNetwork.INSTANCE.send(new UseAbilityC2SPacket(gemType), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new UseAbilityC2SPacket());
       }
     }
 
@@ -126,7 +128,8 @@ public class ZodiacGemsClient {
       }
       GemType gemType = GemType.getHeldGem(mc.player);
       if (gemType != null) {
-        ZodiacNetwork.INSTANCE.send(new ToggleAbilityC2SPacket(), PacketDistributor.SERVER.noArg());
+        // ZodiacNetwork.INSTANCE.send(new ToggleAbilityC2SPacket(), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new ToggleAbilityC2SPacket());
       }
     }
   }
