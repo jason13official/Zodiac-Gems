@@ -9,12 +9,11 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class RubyFloatJumpC2SPacket implements CustomPacketPayload {
+public record RubyFloatJumpC2SPacket(boolean jumping) implements CustomPacketPayload {
 
-  public static final CustomPacketPayload.Type<RubyFloatJumpC2SPacket> TYPE = new CustomPacketPayload.Type<>(ZodiacGems.id("ruby_float_jump"));
+  public static final Type<RubyFloatJumpC2SPacket> TYPE = new Type<>(ZodiacGems.id("ruby_float_jump"));
 
   public static final StreamCodec<ByteBuf, RubyFloatJumpC2SPacket> STREAM_CODEC = StreamCodec.composite(
       ByteBufCodecs.BOOL,
@@ -27,34 +26,16 @@ public class RubyFloatJumpC2SPacket implements CustomPacketPayload {
     return TYPE;
   }
 
-  private final boolean jumping;
-
-  public RubyFloatJumpC2SPacket(boolean jumping) {
-    this.jumping = jumping;
-  }
-
-  public RubyFloatJumpC2SPacket(FriendlyByteBuf data) {
-    this.jumping = data.readBoolean();
-  }
-
-  public void encode(FriendlyByteBuf data) {
-    data.writeBoolean(jumping);
-  }
-
-  public boolean jumping() {
-    return this.jumping;
-  }
-
-  public static void handle(RubyFloatJumpC2SPacket packet, CustomPayloadEvent.Context context) {
-    context.enqueueWork(() -> {
-      ServerPlayer player = context.getSender();
-      if (player == null || GemType.getHeldGem(player) != GemType.RUBY) return;
-      RubyFloatJumpTracker.setJumping(player.getUUID(), packet.jumping);
-    });
-    context.setPacketHandled(true);
-  }
-
-  public void handleOnServer(IPayloadContext iPayloadContext) {
+  public void handleOnServer(IPayloadContext context) {
     // packet = this;
+    context.enqueueWork(() -> {
+      if (!(context.player() instanceof ServerPlayer player)) {
+        return;
+      }
+      if (player == null || GemType.getHeldGem(player) != GemType.RUBY) {
+        return;
+      }
+      RubyFloatJumpTracker.setJumping(player.getUUID(), this.jumping());
+    });
   }
 }
