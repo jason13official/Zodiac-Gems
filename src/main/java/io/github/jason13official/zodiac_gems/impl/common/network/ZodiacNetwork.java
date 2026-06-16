@@ -24,7 +24,6 @@ public class ZodiacNetwork {
     INSTANCE.messageBuilder(ToggleAbilityC2SPacket.class).encoder(ToggleAbilityC2SPacket::encode).decoder(ToggleAbilityC2SPacket::new).consumerMainThread(ToggleAbilityC2SPacket::handle).add();
     INSTANCE.messageBuilder(ToggleDarknessS2CPacket.class).encoder(ToggleDarknessS2CPacket::encode).decoder(ToggleDarknessS2CPacket::new).consumerMainThread(ToggleDarknessS2CPacket::handle).add();
     INSTANCE.messageBuilder(ToggleWaterbendS2CPacket.class).encoder(ToggleWaterbendS2CPacket::encode).decoder(ToggleWaterbendS2CPacket::new).consumerMainThread(ToggleWaterbendS2CPacket::handle).add();
-    INSTANCE.messageBuilder(SyncInvisibilityS2CPacket.class).encoder(SyncInvisibilityS2CPacket::encode).decoder(SyncInvisibilityS2CPacket::new).consumerMainThread(SyncInvisibilityS2CPacket::handle).add();
     INSTANCE.messageBuilder(SyncNametagS2CPacket.class).encoder(SyncNametagS2CPacket::encode).decoder(SyncNametagS2CPacket::new).consumerMainThread(SyncNametagS2CPacket::handle).add();
   }
 }

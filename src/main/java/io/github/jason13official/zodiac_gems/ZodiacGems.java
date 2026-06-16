@@ -78,6 +78,7 @@ public class ZodiacGems {
       final PayloadRegistrar registrar = event.registrar("1");
 
       registrar.playToServer(RubyFloatJumpC2SPacket.TYPE, RubyFloatJumpC2SPacket.STREAM_CODEC, RubyFloatJumpC2SPacket::handleOnServer);
+      registrar.playToClient(SyncInvisibilityS2CPacket.TYPE, SyncInvisibilityS2CPacket.STREAM_CODEC, SyncInvisibilityS2CPacket::handleOnClient);
     });
 
     NeoForge.EVENT_BUS.addListener(ItemPickupEventHandler::onItemPickup);
